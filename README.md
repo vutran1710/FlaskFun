@@ -1,0 +1,2 @@
+# magellan
+Circumnavigation FOSS
