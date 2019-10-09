@@ -27,5 +27,5 @@ $ pipenv run dev
 3. Write a PUT api to add more key to RESULT with default value being an empty string
 4. Write a POST api to add more than one keys and values to the RESULT dict
 5. Write a DELETE api to delete a single key of RESULT dict
+6. Write a PATCH api to update a specific key of RESULT dict
 ```
-
