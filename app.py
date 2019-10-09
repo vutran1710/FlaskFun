@@ -1,30 +1,21 @@
 from flask_api import FlaskAPI 
+from flask import request
 
 app = FlaskAPI(__name__)
 
-my_class = {
-        's1' : 'quoc',
-        's2' : 'phong',
-        's4' : 'long',
-        's4' : 'viet',
-        's5' : 'phuong'
+RESULT = {
+        's1' : 'value1',
+        's2' : 'value2',
+        's3' : 'value3',
+        's4' : 'value4',
+        's5' : 'value5'
 }
 #  quesion 1 finshed  
-@app.route('/', methods=['GET'])
-def ALlStudent():
-        return my_class             
+@app.route('/data', methods=['GET'])
+def query_string():
+    args = request.args['key']       
+    return RESULT[args]
 
-@app.route('/s1', methods=['GET'])
-def student_1():
-        return my_class['s1']
-
-@app.route('/s2', methods=['GET'])
-def student_2():
-        return my_class['s2']
-
-       
-                
-    
 #  quesion 2 finshed 
   
 if __name__ == "__main__":
