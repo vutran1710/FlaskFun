@@ -18,12 +18,9 @@ def OneStudent(name):
     
 @app.route('/students', methods=['POST'])
 def addstudent():
-    if  request.methods == 'POST': 
         student = {'name': request.json['name']}
         students.append(student)
         return { 'name' : students}
-    else
-        return "Lỗi rồi bạn ơi"
 
 # question 4
 if __name__ == "__main__":
