@@ -23,7 +23,6 @@ def get_value():
            
     return "value: %s " % (RESULT[key])   
   
-
 @app.route('/data', methods=['PATCH'])
 def update_key():
     key = request.args.get('key')
