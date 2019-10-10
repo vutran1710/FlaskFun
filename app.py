@@ -21,15 +21,15 @@ def get_value():
 
 @app.route('/data', methods=['PATCH'])
 def update_key():
+    key = request.args.get('key')
     req = request.get_json()
-    key = list(req)[0]
 
     if key not in RESULT:
         return "Key does not exist"
 
     old_value = RESULT[key]
-    new_value = req[key]
-    RESULT.update(req)
+    new_value = req[list(req)[0]]
+    RESULT[key] = new_value
 
     return 'key {} has successful updated from old value: {} to new value: {}'.format(key, old_value, new_value)
 
