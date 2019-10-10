@@ -16,9 +16,12 @@ def get_value():
     
     if not key :
         return "You forgot key"
-
-    return "value: %s " % (RESULT[key])
-  
+    
+    if key not in RESULT:
+        return "KeyErorr"
+           
+    return "value: %s " % (RESULT[key])   
+ 
 
 if __name__ == "__main__":
     app.run(debug=True)
