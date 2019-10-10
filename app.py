@@ -4,7 +4,7 @@ from flask import request
 app = FlaskAPI(__name__)
 
 @app.route('/data', methods=['PATCH'])
-def data():
+def update_key():
     req = request.get_json()
     key = list(req)[0]
 
@@ -15,7 +15,7 @@ def data():
 
     RESULT.update(req)
 
-    return 'Key {} has successful updated from old value: {} to new value: {}'.format(key, old_value, new_value)
+    return 'key {} has successful updated from old value: {} to new value: {}'.format(key, old_value, new_value)
 
 if __name__ == "__main__":
     app.run(debug=True)
