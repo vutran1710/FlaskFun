@@ -24,6 +24,8 @@ def get_value():
 def update_key():
     key = request.args.get('key')
     request_json_body = request.get_json()
+    print(type(request_json_body))
+    print(request_json_body.keys()[0])
 
     if key not in RESULT:
         return "Key does not exist"
@@ -42,6 +44,19 @@ def update_key():
            "from old value: {} " \
            "to new value: {}".format(key, old_value, new_value)
 
+@app.route('/data', methods=['DELETE'])
+def delete_key():
+    key = request.args.get('key')
+
+    if not key:
+        return "You forgot key"
+    
+    if key not in RESULT:
+        return "key does not exist"
+
+    del RESULT[key]
+
+    return "key: {} has been deleted!".format(key)
 
 if __name__ == "__main__":
     app.run(debug=True)
