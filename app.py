@@ -6,8 +6,10 @@ app = FlaskAPI(__name__)
 @app.route('/data', methods=['PATCH'])
 def data():
     req = request.get_json()
-    
     key = list(req)[0]
+
+    if key not in RESULT:
+        return "Key does not exist"
     old_value = RESULT[key]
     new_value = req[key]
 
