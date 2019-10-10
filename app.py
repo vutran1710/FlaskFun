@@ -1,5 +1,6 @@
 from flask_api import FlaskAPI 
 from flask import request
+import json
 
 
 app = FlaskAPI(__name__)
@@ -23,14 +24,21 @@ def get_value():
 @app.route('/data', methods=['PATCH'])
 def update_key():
     key = request.args.get('key')
-    req = request.get_json()
 
     if key not in RESULT:
         return "Key does not exist"
 
+    if not request.is_json:
+        return "Invalid: content type is not json"
+ 
+    request_json_body = request.get_json()
+
+    if "value" not in request_json_body:
+        return "request body does have key named value!"
+
     old_value = RESULT[key]
-    new_value = req[list(req)[0]]
-    RESULT[key] = new_value
+    new_value = request_json_body['value']
+    RESULT.update({ key: new_value })
 
     return "key {} has successful updated " \
            "from old value: {} " \
