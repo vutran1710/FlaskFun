@@ -24,14 +24,13 @@ def get_value():
 @app.route('/data', methods=['PATCH'])
 def update_key():
     key = request.args.get('key')
+    request_json_body = request.get_json()
 
     if key not in RESULT:
         return "Key does not exist"
 
     if not request.is_json:
         return "Invalid: content type is not json"
- 
-    request_json_body = request.get_json()
 
     if "value" not in request_json_body:
         return "request body does have key named value!"
