@@ -15,7 +15,7 @@ def data():
 
     RESULT.update(req)
 
-    return 'key {} has successful updated from old value: {} to new value: {}'.format(key, old_value, new_value)
+    return 'Key {} has successful updated from old value: {} to new value: {}'.format(key, old_value, new_value)
 
 if __name__ == "__main__":
     app.run(debug=True)
