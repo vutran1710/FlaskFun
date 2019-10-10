@@ -15,11 +15,14 @@ RESULT = {
 def get_value():
     key = request.args.get('key')
     
-    if not key :
+    if not key:
         return "You forgot key"
-
-    return "value: %s " % (RESULT[key])
-
+    
+    if key not in RESULT:
+        return "Key does not exist"
+           
+    return "value: %s " % (RESULT[key])   
+  
 @app.route('/data', methods=['PATCH'])
 def update_key():
     key = request.args.get('key')
@@ -55,6 +58,7 @@ def delete_key():
     del RESULT[key]
 
     return "key: {} has been deleted!".format(key)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
