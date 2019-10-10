@@ -13,6 +13,7 @@ RESULT = {
 @app.route('/', methods=['GET'])
 def get_value():
     key = request.args.get('key')
+    
     if not key :
         return "You forgot key"
 
