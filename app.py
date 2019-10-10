@@ -1,6 +1,5 @@
 from flask_api import FlaskAPI 
 from flask import request
-import json
 
 
 app = FlaskAPI(__name__)
