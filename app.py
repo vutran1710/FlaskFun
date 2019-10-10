@@ -18,7 +18,7 @@ def get_value():
         return "You forgot key"
     
     if key not in RESULT:
-        return "KeyErorr"
+        return "Key does not exist"
            
     return "value: %s " % (RESULT[key])   
  
