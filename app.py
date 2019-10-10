@@ -24,8 +24,6 @@ def get_value():
 def update_key():
     key = request.args.get('key')
     request_json_body = request.get_json()
-    print(type(request_json_body))
-    print(request_json_body.keys()[0])
 
     if key not in RESULT:
         return "Key does not exist"
