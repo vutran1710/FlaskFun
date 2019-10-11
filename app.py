@@ -19,13 +19,19 @@ def get_value():
 
     return "value: %s " % (RESULT[key])
 
-@app.route('/addvalue', methods=['POST'])
+@app.route('/data', methods=['POST'])
 def add_value():
-    if request.method == 'POST' and request.is_json:
-        RESULT.update(request.json)
-        return RESULT
-    else:
-        return "Fail add value"
+    request_json_body = request.get_json()
+
+    if not request.is_json:
+        return "Invalid: content type is not json"
+
+    if not request_json_body:
+        return "Request body does have key named value"
+    
+    new_value = request_json_body
+    RESULT.update(request_json_body)
+    return "value {} has successful added".format(new_value) 
 
 
 if __name__ == "__main__":
