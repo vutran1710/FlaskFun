@@ -25,10 +25,6 @@ def get_value():
   
 @app.route('/data', methods=['POST'])
 def add_value():
-    @app.route('/data', methods=['POST'])
-def add_value():
-    request_json_body = request.get_json()
-
     if not request.is_json:
         return "Invalid: content type is not json"
     
