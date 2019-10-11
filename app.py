@@ -24,6 +24,8 @@ def get_value():
 def add_keys():
     request_json_body = request.get_json()
 
+    keys_added = ""
+
     if not request.is_json:
         return "Invalid: content type is not json"
 
@@ -33,10 +35,12 @@ def add_keys():
 
         if key in RESULT:
             return "Key does exist "
-      
+
+        keys_added += (key + ", ")
+
     RESULT.update(request_json_body)
             
-    return ["Item {} is added".format(item) for item in request_json_body.items()]
+    return "Keys are added: {}".format(keys_added[:-2])
 
 @app.route('/data', methods=['PATCH'])
 def update_key():
