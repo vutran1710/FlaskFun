@@ -21,17 +21,20 @@ def get_value():
 
 @app.route('/data', methods=['POST'])
 def add_value():
+    # key = request.args.get('key')
     request_json_body = request.get_json()
+    
+    # if not key:
+        # return "You forgot key"
 
     if not request.is_json:
         return "Invalid: content type is not json"
-
-    if not request_json_body:
-        return "Request body does have key named value"
     
-    new_value = request_json_body
+    # if "value" not request_json_body:
+    #     return "Request body does have key name value!"
+    
     RESULT.update(request_json_body)
-    return "value {} has successful added".format(new_value) 
+    return "value {} has successful added".format(request_json_body) 
 
 
 if __name__ == "__main__":
