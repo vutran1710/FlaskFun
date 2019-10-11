@@ -25,20 +25,25 @@ def get_value():
   
 @app.route('/data', methods=['POST'])
 def add_value():
-    # key = request.args.get('key')
+    @app.route('/data', methods=['POST'])
+def add_value():
     request_json_body = request.get_json()
-    
-    # if not key:
-        # return "You forgot key"
 
     if not request.is_json:
         return "Invalid: content type is not json"
     
-    # if "value" not request_json_body:
-    #     return "Request body does have key name value!"
-    
-    RESULT.update(request_json_body)
-    return "value {} has successful added".format(request_json_body) 
+    for key,value in request_json_body.items():
+        if not key:
+            return "Key is empty"
+
+        if key in RESULT:
+            return "Key does exist "
+
+        if not value:
+            return "Value is empty"        
+
+        RESULT.update(request_json_body)
+        return "Key {} and value {} has successful added".format(key,value) 
     
 @app.route('/data', methods=['PATCH'])
 def update_key():
