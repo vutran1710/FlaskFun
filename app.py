@@ -20,6 +20,24 @@ def get_value():
 
     return "value: %s " % (RESULT[key])
 
+@app.route('/data', methods=['POST'])
+def add_keys():
+    request_json_body = request.get_json()
+
+    if not request.is_json:
+        return "Invalid: content type is not json"
+
+    for key, value in request_json_body.items():
+        if not key:
+            return "Key is empty"
+
+        if key in RESULT:
+            return "Key does exist "
+      
+    RESULT.update(request_json_body)
+            
+    return ["Item {} is added".format(item) for item in request_json_body.items()]
+
 @app.route('/data', methods=['PATCH'])
 def update_key():
     key = request.args.get('key')
