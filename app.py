@@ -23,6 +23,25 @@ def get_value():
            
     return "value: %s " % (RESULT[key]) 
 
+@app.route('/data', methods=['PUT'])
+def add_default_keys():
+    keys_added = []
+
+    for param, key in request.args.items():
+        if not key:
+            return "You forgot key"
+        
+        if key in RESULT:
+            return "Key does exist"
+        
+        RESULT.update({key: ""})
+        keys_added.append(key)
+    
+    joined_string = ', '.join(keys_added)
+    response = 'New keys with empty string values added: {}'.format(joined_string)
+
+    return response
+
 @app.route('/data', methods=['POST'])
 def add_keys():
     if not request.is_json:
@@ -46,7 +65,7 @@ def add_keys():
     response = 'New keys added: {}'.format(joined_string)
 
     return response
-        
+
 @app.route('/data', methods=['PATCH'])
 def update_key():
     key = request.args.get('key')
