@@ -43,8 +43,8 @@ def add_default_keys():
         keys_added.append(key)
 
     joined_string = ', '.join(keys_added)
-    response = 'New keys with empty " \
-    "string values added: {}'.format(joined_string)
+    response = "New keys with empty "\
+        "string values added: {}".format(joined_string)
 
     return response
 
