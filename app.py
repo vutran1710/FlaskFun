@@ -1,5 +1,8 @@
 from flask_api import FlaskAPI
 from flask import request
+from flask import jsonify
+from flask import json
+from werkzeug.exceptions import HTTPException, BadRequest
 
 
 app = FlaskAPI(__name__)
@@ -12,15 +15,38 @@ RESULT = {
 }
 
 
+@app.errorhandler(HTTPException)
+def handle_exception(e):
+    """Return JSON instead of HTML for HTTP errors."""
+    # start with the correct headers and status code from the error
+    response = e.get_response()
+    # replace the body with JSON
+    response.data = json.dumps({
+        "code": e.code,
+        "name": e.name,
+        "description": e.description,
+    })
+    response.content_type = "application/json"
+    return response
+
+
+@app.errorhandler(BadRequest)
+def handle_bad_request(e):
+    return jsonify({
+        "code": e.code,
+        "name": e.name,
+        "description": e.description}), 400
+
+
 @app.route('/', methods=['GET'])
 def get_value():
     key = request.args.get('key')
 
     if not key:
-        return "You forgot key"
+        raise BadRequest("You forgot key!")
 
     if key not in RESULT:
-        return "Key does not exist"
+        raise BadRequest("Key does not exist")
 
     return "value: %s " % (RESULT[key])
 
@@ -30,14 +56,14 @@ def add_default_keys():
     keys_added = []
 
     if not request.args:
-        return "You forgot key"
+        raise BadRequest("You forgot key!")
 
     for param, key in request.args.items():
         if not key:
-            return "You forgot key"
+            raise BadRequest("You forgot key!")
 
         if key in RESULT:
-            return "Key does exist"
+            raise BadRequest("Key does exist")
 
         RESULT.update({key: ""})
         keys_added.append(key)
@@ -52,7 +78,7 @@ def add_default_keys():
 @app.route('/data', methods=['POST'])
 def add_keys():
     if not request.is_json:
-        return "Invalid: content type is not json"
+        raise BadRequest("Invalid: content type is not json")
 
     request_json_body = request.get_json()
 
@@ -60,10 +86,10 @@ def add_keys():
 
     for key, value in request_json_body.items():
         if not key:
-            return "Key is empty"
+            raise BadRequest("Key is empty")
 
         if key in RESULT:
-            return "Key does exist "
+            raise BadRequest("Key does exist")
 
         keys_added.append(key)
 
@@ -80,13 +106,13 @@ def update_key():
     request_json_body = request.get_json()
 
     if key not in RESULT:
-        return "Key does not exist"
+        raise BadRequest("Key does not exist")
 
     if not request.is_json:
-        return "Invalid: content type is not json"
+        raise BadRequest("Invalid: content type is not json")
 
     if "value" not in request_json_body:
-        return "request body does have key named value!"
+        raise BadRequest("request body does have key named value!")
 
     old_value = RESULT[key]
     new_value = request_json_body['value']
@@ -102,10 +128,10 @@ def delete_key():
     key = request.args.get('key')
 
     if not key:
-        return "You forgot key"
+        raise BadRequest("You forgot key")
 
     if key not in RESULT:
-        return "key does not exist"
+        raise BadRequest("key does not exist")
 
     del RESULT[key]
 
