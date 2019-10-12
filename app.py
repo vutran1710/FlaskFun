@@ -27,6 +27,9 @@ def get_value():
 def add_default_keys():
     keys_added = []
 
+    if not request.args:
+        return "You forgot key"
+
     for param, key in request.args.items():
         if not key:
             return "You forgot key"
