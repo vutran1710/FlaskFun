@@ -1,27 +1,29 @@
-from flask_api import FlaskAPI 
+from flask_api import FlaskAPI
 from flask import request
 
 
 app = FlaskAPI(__name__)
 
 RESULT = {
-    'language' : 'Python',
-    'framework' : 'Flask',
-    'website' : 'Facebook',
-    'editor' : 'vscode'        
+    'language': 'Python',
+    'framework': 'Flask',
+    'website': 'Facebook',
+    'editor': 'vscode'
 }
+
 
 @app.route('/', methods=['GET'])
 def get_value():
     key = request.args.get('key')
-    
+
     if not key:
         return "You forgot key"
-      
+
     if key not in RESULT:
         return "Key does not exist"
-           
-    return "value: %s " % (RESULT[key]) 
+
+    return "value: %s " % (RESULT[key])
+
 
 @app.route('/data', methods=['PUT'])
 def add_default_keys():
@@ -33,17 +35,19 @@ def add_default_keys():
     for param, key in request.args.items():
         if not key:
             return "You forgot key"
-        
+
         if key in RESULT:
             return "Key does exist"
-        
+
         RESULT.update({key: ""})
         keys_added.append(key)
-    
+
     joined_string = ', '.join(keys_added)
-    response = 'New keys with empty string values added: {}'.format(joined_string)
+    response = 'New keys with empty " \
+    "string values added: {}'.format(joined_string)
 
     return response
+
 
 @app.route('/data', methods=['POST'])
 def add_keys():
@@ -69,6 +73,7 @@ def add_keys():
 
     return response
 
+
 @app.route('/data', methods=['PATCH'])
 def update_key():
     key = request.args.get('key')
@@ -85,11 +90,12 @@ def update_key():
 
     old_value = RESULT[key]
     new_value = request_json_body['value']
-    RESULT.update({ key: new_value })
+    RESULT.update({key: new_value})
 
     return "key {} has successful updated " \
            "from old value: {} " \
            "to new value: {}".format(key, old_value, new_value)
+
 
 @app.route('/data', methods=['DELETE'])
 def delete_key():
@@ -97,7 +103,7 @@ def delete_key():
 
     if not key:
         return "You forgot key"
-    
+
     if key not in RESULT:
         return "key does not exist"
 
