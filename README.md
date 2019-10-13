@@ -1,7 +1,14 @@
 # Training Week 1
 - Basic Web Development
-- Python & Ecosystem
-- Development & Testing 101
+- Setup
+- Basic API Development
+
+# Training Week 2
+- Code Quality
+- HTTP Status & Error Handling
+- Testing
+- API Documentation
+- Docker experience and setting up Database
 
 ## Setup
 
