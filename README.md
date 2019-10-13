@@ -20,7 +20,7 @@ $ pipenv run dev
 
 ## Tasks
 
-- [ ] Writing simple `Stateful Backend` that has APIs to support multiple methods `GET, PUT, POST, DELETE`
+- [x] Writing simple `Stateful Backend` that has APIs to support multiple methods `GET, PUT, POST, DELETE`
 ```
 1. Declare a `global` dict namely RESULT
 2. Write a GET api with query-param as one of RESULT's keys to return its corresponding value in plain text-format
@@ -28,4 +28,14 @@ $ pipenv run dev
 4. Write a POST api to add more than one keys and values to the RESULT dict
 5. Write a DELETE api to delete a single key of RESULT dict
 6. Write a PATCH api to update a specific key of RESULT dict
+```
+
+- [ ] Writing Error Handler and learning to handle different types of exception in different scenarios
+
+```
+1. Write BadRequest Handler
+2. Write a Generic Exception Handler
+3. Raise Exception instead of returning simple strings
+4. Write Test (so I can save time running the development server and sending stupid requests)
+5. Document API with text-based REST-Client
 ```
