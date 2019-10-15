@@ -3,9 +3,34 @@ from flask import request
 from flask import jsonify
 from flask import json
 from werkzeug.exceptions import HTTPException, BadRequest
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
+from sqlalchemy_utils import database_exists, create_database
 
+# Create database: mydatabase2 for user postgres
+engine = create_engine("postgresql://postgres:postgres@localhost:5432/mydatabase2")
+if not database_exists(engine.url):
+    create_database(engine.url)
 
+# bind variable db to mydatabase2
 app = FlaskAPI(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost:5432/mydatabase2'
+db = SQLAlchemy(app)
+
+
+class Result(db.Model):
+    key = db.Column(db.String(120), primary_key=True)
+    value = db.Column(db.String(120))
+
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+
+    def __repr__(self):
+        return 'Item: {} {}'.format(self.key, self.value)
+
+
+db.create_all()
 
 RESULT = {
     'language': 'Python',
@@ -92,8 +117,10 @@ def add_keys():
             raise BadRequest("Key does exist")
 
         keys_added.append(key)
+        new_item = Result(key, value)
+        db.session.add(new_item)
+        db.session.commit()
 
-    RESULT.update(request_json_body)
     joined_string = ', '.join(keys_added)
     response = 'New keys added: {}'.format(joined_string)
 
