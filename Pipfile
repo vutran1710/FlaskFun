@@ -14,7 +14,6 @@ flask-api = "*"
 flask-sqlalchemy = "*"
 psycopg2-binary = "*"
 sqlalchemy-utils = "*"
-peewee = "*"
 
 [requires]
 python_version = "3.7"
