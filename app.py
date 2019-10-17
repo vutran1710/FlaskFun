@@ -3,7 +3,8 @@ from flask_api import FlaskAPI
 from flask_sqlalchemy import SQLAlchemy
 import error_handlers as handler
 from api import (
-    simple_data,
+    user,
+    simple_data
 )
 
 
@@ -12,7 +13,7 @@ app = FlaskAPI(__name__, instance_relative_config=True)
 app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
 
-# ERROR HANDLERS
+# REGISTER ERROR HANDLERS
 app.register_error_handler(HTTPException, handler._generic_exception)
 app.register_error_handler(BadRequest, handler._bad_request)
 
