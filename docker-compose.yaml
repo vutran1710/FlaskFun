@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  pg:
+    image: postgres:10-alpine
+    container_name: magellan-db
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5422:5432
