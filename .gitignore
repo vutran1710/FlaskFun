@@ -62,3 +62,5 @@ typings/
 
 /launch.json
 /settings.json
+.db/
+.vscode/
