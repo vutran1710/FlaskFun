@@ -4,10 +4,10 @@ from flask import jsonify
 from flask import json
 from werkzeug.exceptions import HTTPException, BadRequest
 
-
-# bind variable db to mydatabase2
-app = FlaskAPI(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost:5432/mydatabase2'
+"""Init Flask instance with external config
+"""
+app = FlaskAPI(__name__, instance_relative_config=True)
+app.config.from_pyfile('config.py')
 
 
 RESULT = {
@@ -41,7 +41,7 @@ def handle_bad_request(e):
         "description": e.description}), 400
 
 
-@app.route('/', methods=['GET'])
+@app.route('/api/simple_data', methods=['GET'])
 def get_value():
     key = request.args.get('key')
 
@@ -54,7 +54,7 @@ def get_value():
     return "value: %s " % (RESULT[key])
 
 
-@app.route('/data', methods=['PUT'])
+@app.route('/api/simple_data', methods=['PUT'])
 def add_default_keys():
     keys_added = []
 
@@ -78,7 +78,7 @@ def add_default_keys():
     return response
 
 
-@app.route('/data', methods=['POST'])
+@app.route('/api/simple_data', methods=['POST'])
 def add_keys():
     if not request.is_json:
         raise BadRequest("Invalid: content type is not json")
@@ -103,7 +103,7 @@ def add_keys():
     return response
 
 
-@app.route('/data', methods=['PATCH'])
+@app.route('/api/simple_data', methods=['PATCH'])
 def update_key():
     key = request.args.get('key')
     request_json_body = request.get_json()
@@ -126,7 +126,7 @@ def update_key():
            "to new value: {}".format(key, old_value, new_value)
 
 
-@app.route('/data', methods=['DELETE'])
+@app.route('/api/simple_data', methods=['DELETE'])
 def delete_key():
     key = request.args.get('key')
 
