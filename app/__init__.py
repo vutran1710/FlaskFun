@@ -8,9 +8,9 @@ from app.instance.config import Config
 db = SQLAlchemy()
 
 
-def create_app(config_class=Config):
+def create_app():
     app = FlaskAPI(__name__)
-    app.config.from_object(config_class)
+    app.config.from_object(Config)
     db.init_app(app)
     db.app = app
 

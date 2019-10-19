@@ -51,7 +51,7 @@ $ pipenv run dev
 ## Running
 1. Build docker-compose
 ```
-sudo docker-compose up
+sudo docker-compose up -d
 ```
 2. Run app:
 ```
