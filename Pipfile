@@ -4,13 +4,19 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pylint = "*"
+jedi = "*"
+flake8 = "*"
 
 [packages]
 flask = "*"
 flask-api = "*"
+flask-sqlalchemy = "*"
+psycopg2-binary = "*"
+sqlalchemy-utils = "*"
 
 [requires]
 python_version = "3.7"
 
 [scripts]
-dev = "pipenv run python ./app.py"
+dev = "pipenv run python ./run.py"

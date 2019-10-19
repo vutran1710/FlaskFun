@@ -37,6 +37,7 @@ $ pipenv run dev
 6. Write a PATCH api to update a specific key of RESULT dict
 ```
 
+
 - [ ] Writing Error Handler and learning to handle different types of exception in different scenarios
 
 ```
@@ -45,4 +46,14 @@ $ pipenv run dev
 3. Raise Exception instead of returning simple strings
 4. Write Test (so I can save time running the development server and sending stupid requests)
 5. Document API with text-based REST-Client
+```
+
+## Running
+1. Build docker-compose
+```
+sudo docker-compose up -d
+```
+2. Run app:
+```
+pipenv run dev
 ```
