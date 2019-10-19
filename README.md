@@ -49,15 +49,11 @@ $ pipenv run dev
 ```
 
 ## Running
-1. Build image by using Dockerfile content:
+1. Build docker-compose
 ```
-sudo docker build -t my-flask-postgres .
+sudo docker-compose up
 ```
-2. Create a container with name: `some-postgres`
-```
-sudo docker run --name some-postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d my-flask-postgres
-```
-3. Run app:
+2. Run app:
 ```
 pipenv run dev
 ```

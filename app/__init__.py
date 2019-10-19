@@ -2,14 +2,15 @@ from werkzeug.exceptions import HTTPException, BadRequest
 from flask_api import FlaskAPI
 import app.error_handlers as handler
 from flask_sqlalchemy import SQLAlchemy
+from app.instance.config import Config
 
 
 db = SQLAlchemy()
 
 
-def create_app():
+def create_app(config_class=Config):
     app = FlaskAPI(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost:5432/postgres'
+    app.config.from_object(config_class)
     db.init_app(app)
     db.app = app
 
