@@ -14,6 +14,7 @@ flask-api = "*"
 flask-sqlalchemy = "*"
 psycopg2-binary = "*"
 sqlalchemy-utils = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.7"
