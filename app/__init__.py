@@ -12,13 +12,15 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost:5432/postgres'
     db.init_app(app)
     db.app = app
+
     from app.models import User, University
     db.create_all()
 
     app.register_error_handler(HTTPException, handler._generic_exception)
     app.register_error_handler(BadRequest, handler._bad_request)
 
-    from app.api import user
+    from app.api import user, simple_data
     app.register_blueprint(user.bp)
+    app.register_blueprint(simple_data.bp)
 
     return app
