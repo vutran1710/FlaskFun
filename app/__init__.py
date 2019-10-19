@@ -1,27 +1,24 @@
 from werkzeug.exceptions import HTTPException, BadRequest
 from flask_api import FlaskAPI
-import error_handlers as handler
+import app.error_handlers as handler
+from flask_sqlalchemy import SQLAlchemy
 
 
-def create_app(config_filename):
-    app = FlaskAPI(__name__, instance_relative_config=True)
-    app.config.from_pyfile(config_filename)
+db = SQLAlchemy()
 
-    from db import db
-    from models import User, University
+
+def create_app():
+    app = FlaskAPI(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost:5432/postgres'
     db.init_app(app)
     db.app = app
+    from app.models import User, University
     db.create_all()
 
     app.register_error_handler(HTTPException, handler._generic_exception)
     app.register_error_handler(BadRequest, handler._bad_request)
 
-    import user
+    from app.api import user
     app.register_blueprint(user.bp)
 
     return app
-
-
-if __name__ == "__main__":
-    app = create_app('config.py')
-    app.run(debug=True)

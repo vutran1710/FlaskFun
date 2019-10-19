@@ -1,7 +1,7 @@
 from flask import request, jsonify, Blueprint
 from werkzeug.exceptions import BadRequest
-from models import User
-from db import db
+from app.models import User
+from app import db
 
 
 bp = Blueprint('user', __name__)
@@ -11,13 +11,10 @@ bp = Blueprint('user', __name__)
 def get_all_user():
     users = User.query.all()
 
-    if users is None:
-        return "There are no user!"
-
     return jsonify(users=[u.serialize for u in users])
 
 
-@bp.route('/api/user/<int: id>', methods=['GET'])
+@bp.route('/api/user/<int:id>', methods=['GET'])
 def get_by_id(id):
     users = User.query.filter_by(id=id).one()
     return jsonify(user=users.serialize)
@@ -45,7 +42,7 @@ def add_user():
     return jsonify(added_user=added_user.serialize)
 
 
-@bp.route('/api/user<int: id>', methods=['PATCH'])
+@bp.route('/api/user<int:id>', methods=['PATCH'])
 def update_by_id(id):
     request_json_body = request.get_json()
 
@@ -70,7 +67,7 @@ def update_by_id(id):
     return jsonify(updated_user=updated_user.serialize)
 
 
-@bp.route('/api/user<int: id>', methods=['DELETE'])
+@bp.route('/api/user<int:id>', methods=['DELETE'])
 def delete_by_id():
     deleted_user = User.query.filter_by(id=id).one()
 

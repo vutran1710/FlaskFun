@@ -19,4 +19,4 @@ sqlalchemy-utils = "*"
 python_version = "3.7"
 
 [scripts]
-dev = "pipenv run python ./app.py"
+dev = "pipenv run python ./run.py"
