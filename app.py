@@ -1,25 +1,27 @@
 from werkzeug.exceptions import HTTPException, BadRequest
 from flask_api import FlaskAPI
-from flask_sqlalchemy import SQLAlchemy
 import error_handlers as handler
-from api import (
-    user,
-    simple_data
-)
 
 
-# INIT FLASK INSTANCE WITH EXTERNAL CONFIG
-app = FlaskAPI(__name__, instance_relative_config=True)
-app.config.from_pyfile('config.py')
-db = SQLAlchemy(app)
+def create_app(config_filename):
+    app = FlaskAPI(__name__, instance_relative_config=True)
+    app.config.from_pyfile(config_filename)
 
-# REGISTER ERROR HANDLERS
-app.register_error_handler(HTTPException, handler._generic_exception)
-app.register_error_handler(BadRequest, handler._bad_request)
+    from db import db
+    from models import User, University
+    db.init_app(app)
+    db.app = app
+    db.create_all()
 
-# REGISTER ALL API BLUEPRINTS
-app.register_blueprint(simple_data.bp)
+    app.register_error_handler(HTTPException, handler._generic_exception)
+    app.register_error_handler(BadRequest, handler._bad_request)
+
+    import user
+    app.register_blueprint(user.bp)
+
+    return app
 
 
 if __name__ == "__main__":
+    app = create_app('config.py')
     app.run(debug=True)

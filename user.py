@@ -1,7 +1,7 @@
 from flask import request, jsonify, Blueprint
 from werkzeug.exceptions import BadRequest
 from models import User
-from app import db
+from db import db
 
 
 bp = Blueprint('user', __name__)
