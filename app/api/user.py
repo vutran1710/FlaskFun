@@ -16,7 +16,11 @@ def get_all_user():
 
 @bp.route('/api/user/<int:id>', methods=['GET'])
 def get_by_id(id):
-    users = User.query.filter_by(id=id).one()
+    users = User.query.filter_by(id=id).first()
+
+    if users is None:
+        raise BadRequest("None exist user")
+
     return jsonify(user=users.serialize)
 
 
@@ -42,7 +46,7 @@ def add_user():
     return jsonify(added_user=added_user.serialize)
 
 
-@bp.route('/api/user<int:id>', methods=['PATCH'])
+@bp.route('/api/user/<int:id>', methods=['PATCH'])
 def update_by_id(id):
     request_json_body = request.get_json()
 
@@ -55,21 +59,21 @@ def update_by_id(id):
     if "email" not in request_json_body:
         raise BadRequest("Request body does have key named email!")
 
-    updated_user = User.query.filter_by(id=id).one()
+    updated_user = User.query.filter_by(id=id).first()
 
     if updated_user is None:
         raise BadRequest("None exist user")
 
-    updated_user["name"] = request_json_body["name"]
-    updated_user["email"] = request_json_body["email"]
+    updated_user.username = request_json_body["name"]
+    updated_user.email = request_json_body["email"]
     db.session.commit()
 
     return jsonify(updated_user=updated_user.serialize)
 
 
-@bp.route('/api/user<int:id>', methods=['DELETE'])
-def delete_by_id():
-    deleted_user = User.query.filter_by(id=id).one()
+@bp.route('/api/user/<int:id>', methods=['DELETE'])
+def delete_by_id(id):
+    deleted_user = User.query.filter_by(id=id).first()
 
     if deleted_user is None:
         raise BadRequest("None exist user")
