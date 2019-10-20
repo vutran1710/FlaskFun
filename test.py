@@ -1,6 +1,6 @@
 from app import app, json
 """install: pip install -U pytest
-  Check version: pytest --version
+   Check version: pytest --version
 """
 def test_get():
     response = app.test_client().get('/?key=editor')
@@ -20,8 +20,8 @@ def test_delete():
 
 def test_post():
     response = app.test_client().post('/data',
-     data=json.dumps({'abc': 'JS'}),
-        content_type='application/json', )
+    data=json.dumps({'abc': 'JS'}),
+    content_type='application/json', )
 
     assert response.data == b'New keys added: abc'
 
