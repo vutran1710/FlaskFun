@@ -65,3 +65,4 @@ typings/
 .db/
 .vscode/
 __pycache__/
+.cache/
