@@ -2,7 +2,6 @@ from flask_api import FlaskAPI
 from flask import request
 from flask import jsonify
 from flask import json
-from flask import make_response
 
 from werkzeug.exceptions import HTTPException, BadRequest
 
@@ -143,7 +142,9 @@ def update_key():
     new_value = request_json_body['value']
     RESULT.update({key: new_value})
 
-    return  "to new value: {}".format(new_value)
+    return "key {} has successful updated " \
+           "from old value: {} " \
+           "to new value: {}".format(key, old_value, new_value)
 
 
 @app.route('/data', methods=['DELETE'])
