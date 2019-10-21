@@ -4,6 +4,8 @@ from app import create_app
 
 app = create_app()
 
+def test_get():
+    askix
 
 def test_post():
     payload = {"name": "Viet", "email": "n.vanviet.2209@gmail.com"}
@@ -14,3 +16,4 @@ def test_post():
     assert response.status_code == 200
     response_body = response.get_json()
     assert response_body['added_user']['email'] == payload['email']
+
