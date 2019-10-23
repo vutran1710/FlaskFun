@@ -1,16 +1,15 @@
 import pytest
 import sys
 sys.path.append('../')
-# from sqlalchemy import create_engine
-# from sqlalchemy_utils import database_exists, create_database, drop_database
+from sqlalchemy import create_engine
+from sqlalchemy_utils import database_exists, create_database, drop_database
 from app import create_app, db, instance
 from app.models import User, University
 
 
-# @pytest.fixture(scope='session')
-# def create_database():
-#     engine = create_engine(instance.config.TestingConfig.SQLALCHEMY_TEST_DATABASE_URI)
-#     create_database(engine.url)
+engine = create_engine('postgresql://postgres:postgres@localhost:5422/user_test')
+create_database(engine.url)
+
 
 @pytest.fixture
 def app():
@@ -31,4 +30,3 @@ def app():
     yield app
     db.session.remove()
     db.drop_all()
-    # drop_database(engine.url)

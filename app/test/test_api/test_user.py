@@ -1,6 +1,8 @@
 import json
 import pytest
 
+
+
 test_users = [
         {"id": 1, "username": "Son", "email": "n.vanson@gmail.com"},
         {"id": 2, "username": "Hoan", "email": "n.vanhoan@gmail.com"},
