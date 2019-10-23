@@ -82,3 +82,12 @@ def delete_by_id(id):
     db.session.commit()
 
     return jsonify(deleted_user=deleted_user.serialize)
+
+
+@bp.route('/api/user', methods=['DELETE'])
+def delete_all_user():
+    deleted_users = User.query.all()
+    User.query.delete()
+    db.session.commit()
+
+    return jsonify(deleted_users=[u.serialize for u in deleted_users])
