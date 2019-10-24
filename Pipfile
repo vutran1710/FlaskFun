@@ -16,6 +16,7 @@ flask-api = "*"
 flask-sqlalchemy = "*"
 psycopg2-binary = "*"
 pew = "*"
+cerberus = "*"
 
 [requires]
 python_version = "3.7"
