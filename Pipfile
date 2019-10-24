@@ -15,10 +15,11 @@ flask = "*"
 flask-api = "*"
 flask-sqlalchemy = "*"
 psycopg2-binary = "*"
+pew = "*"
 
 [requires]
 python_version = "3.7"
 
 [scripts]
 dev = "pipenv run python ./run.py"
-test = "pipenv run pytest -v ./test/test_api/test_simple_data.py"
+test = "pipenv run python -m pytest -vv"

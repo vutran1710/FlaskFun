@@ -1,14 +1,6 @@
 import pytest
-import sys
-sys.path.append('../')
-from sqlalchemy import create_engine
-from sqlalchemy_utils import database_exists, create_database, drop_database
 from app import create_app, db, instance
 from app.models import User, University
-
-
-engine = create_engine('postgresql://postgres:postgres@localhost:5422/user_test')
-create_database(engine.url)
 
 
 @pytest.fixture

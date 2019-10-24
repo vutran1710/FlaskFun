@@ -3,4 +3,4 @@ class DevelopmentConfig:
 
 
 class TestConfig:
-    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:postgres@localhost:5422/user_test'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:postgres@localhost:5412/postgres'
