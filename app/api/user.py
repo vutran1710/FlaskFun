@@ -62,6 +62,9 @@ def add_user():
 
 @bp.route('/api/user/<int:id>', methods=['PATCH'])
 def update_by_id(id):
+    if not request.is_json:
+        raise BadRequest("Invalid: content type is not json!")
+
     request_json_body = request.get_json()
 
     if not v.validate({} if request_json_body is None else request_json_body):
