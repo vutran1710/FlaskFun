@@ -48,15 +48,54 @@ def test_post(app):
     assert response_body['added_user']['email'] == data_sended['email']
 
 
+data_sended = [
+    "hello",
+    {"gg": "zafwfawfzzz", "email": "n.zzfawfawefz.2209@gmail.com"},
+    {"name": "zafwfawfzzz", "xx": "n.zzfawfawefz.2209@gmail.com"}
+]
+
+content_type = [
+    "text/html",
+    "application/json",
+    "application/json"
+]
+
+expected = [
+    {
+        "code": 400,
+        "description": "Invalid: content type is not json!",
+        "name": "Bad Request"
+    },
+    {
+        "result": False,
+        "errors": {
+            "gg": [
+                "unknown field"
+            ],
+            "name": [
+                "required field"
+            ]
+        }
+    },
+    {
+        "result": False,
+        "errors": {
+            "email": [
+                "required field"
+            ],
+            "xx": [
+                "unknown field"
+            ]
+        }
+    }
+]
+
+
 @pytest.mark.parametrize("data_sended, content_type, expected",
                          [
-                             ("hello", "text/html", "Invalid: content type is not json!"),
-                             ({"gg": "zafwfawfzzz", "email": "n.zzfawfawefz.2209@gmail.com"},
-                              "application/json",
-                              "None username!"),
-                             ({"name": "zafwfawfzzz", "xx": "n.zzfawfawefz.2209@gmail.com"},
-                              "application/json",
-                              "None email!")
+                             (data_sended[0], content_type[0], expected[0]),
+                             (data_sended[1], content_type[1], expected[1]),
+                             (data_sended[2], content_type[2], expected[2])
                          ],
                          )
 def test_post_fail(app, data_sended, content_type, expected):
@@ -65,9 +104,7 @@ def test_post_fail(app, data_sended, content_type, expected):
                                       content_type=content_type,)
     assert response.status_code == 400
     response_body = response.get_json()
-    assert response_body['code'] == 400
-    assert response_body['description'] == expected
-    assert response_body['name'] == "Bad Request"
+    assert response_body == expected
 
 
 def test_patch(app):
@@ -84,13 +121,9 @@ def test_patch(app):
 
 @pytest.mark.parametrize("data_sended, content_type, expected",
                          [
-                             ("hello", "text/html", "Invalid: content type is not json!"),
-                             ({"gg": "zafwfawfzzz", "email": "n.zzfawfawefz.2209@gmail.com"},
-                              "application/json",
-                              "Request body does have key named name!"),
-                             ({"name": "zafwfawfzzz", "xx": "n.zzfawfawefz.2209@gmail.com"},
-                              "application/json",
-                              "Request body does have key named email!")
+                             (data_sended[0], content_type[0], expected[0]),
+                             (data_sended[1], content_type[1], expected[1]),
+                             (data_sended[2], content_type[2], expected[2])
                          ],
                          )
 def test_patch_fail1(app, data_sended, content_type, expected):
@@ -99,9 +132,7 @@ def test_patch_fail1(app, data_sended, content_type, expected):
                                        content_type=content_type,)
     assert response.status_code == 400
     response_body = response.get_json()
-    assert response_body['code'] == 400
-    assert response_body['description'] == expected
-    assert response_body['name'] == "Bad Request"
+    assert response_body == expected
 
 
 def test_patch_fail2(app):

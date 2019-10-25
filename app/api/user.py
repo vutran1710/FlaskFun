@@ -20,7 +20,7 @@ schema = {
     },
 }
 
-v = Validator(schema)
+validator = Validator(schema)
 bp = Blueprint('user', __name__)
 
 
@@ -47,9 +47,10 @@ def add_user():
         raise BadRequest("Invalid: content type is not json!")
 
     request_json_body = request.get_json()
+    print(request_json_body)
 
-    if not v.validate({} if request_json_body is None else request_json_body):
-        return {'result': False, 'errors': v.errors}
+    if validator.validate(request_json_body) is False:
+        return {'result': False, 'errors': validator.errors}, 400
 
     name = request_json_body['name']
     email = request_json_body['email']
@@ -67,8 +68,8 @@ def update_by_id(id):
 
     request_json_body = request.get_json()
 
-    if not v.validate({} if request_json_body is None else request_json_body):
-        return {'result': False, 'errors': v.errors}
+    if validator.validate(request_json_body) is False:
+        return {'result': False, 'errors': validator.errors}, 400
 
     updated_user = User.query.filter_by(id=id).first()
 
