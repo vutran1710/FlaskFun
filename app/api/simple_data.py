@@ -11,6 +11,7 @@ RESULT = {
 
 
 
+
 bp = Blueprint('simple_data', __name__)
 
 
