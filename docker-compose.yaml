@@ -8,3 +8,10 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - 5422:5432
+  pgtest:
+    image: postgres:10-alpine
+    container_name: magellan-db-test
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5412:5432

@@ -2,8 +2,25 @@ from flask import request, jsonify, Blueprint
 from werkzeug.exceptions import BadRequest
 from app.models import User
 from app import db
+from cerberus import Validator
 
 
+schema = {
+    'email': {
+        'type':        'string',
+        'required':    True,
+        'empty':       False,
+        'maxlength':   128
+    },
+    'name': {
+        'type':      'string',
+        'required':  True,
+        'empty':     False,
+        'maxlength': 128
+    },
+}
+
+validator = Validator(schema)
 bp = Blueprint('user', __name__)
 
 
@@ -30,12 +47,10 @@ def add_user():
         raise BadRequest("Invalid: content type is not json!")
 
     request_json_body = request.get_json()
+    print(request_json_body)
 
-    if 'name' not in request_json_body:
-        raise BadRequest("None username!")
-
-    if 'email' not in request_json_body:
-        raise BadRequest("None email!")
+    if validator.validate(request_json_body) is False:
+        return {'result': False, 'errors': validator.errors}, 400
 
     name = request_json_body['name']
     email = request_json_body['email']
@@ -48,16 +63,13 @@ def add_user():
 
 @bp.route('/api/user/<int:id>', methods=['PATCH'])
 def update_by_id(id):
-    request_json_body = request.get_json()
-
     if not request.is_json:
         raise BadRequest("Invalid: content type is not json!")
 
-    if "name" not in request_json_body:
-        raise BadRequest("Request body does have key named name!")
+    request_json_body = request.get_json()
 
-    if "email" not in request_json_body:
-        raise BadRequest("Request body does have key named email!")
+    if validator.validate(request_json_body) is False:
+        return {'result': False, 'errors': validator.errors}, 400
 
     updated_user = User.query.filter_by(id=id).first()
 
@@ -82,3 +94,12 @@ def delete_by_id(id):
     db.session.commit()
 
     return jsonify(deleted_user=deleted_user.serialize)
+
+
+@bp.route('/api/user', methods=['DELETE'])
+def delete_all_user():
+    deleted_users = User.query.all()
+    User.query.delete()
+    db.session.commit()
+
+    return jsonify(deleted_users=[u.serialize for u in deleted_users])
