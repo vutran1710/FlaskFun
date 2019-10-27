@@ -9,6 +9,7 @@ RESULT = {
     'editor': 'vscode'
 }
 
+
 bp = Blueprint('simple_data', __name__)
 
 
