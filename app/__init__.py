@@ -2,15 +2,23 @@ from werkzeug.exceptions import BadRequest
 from flask_api import FlaskAPI
 import app.error_handlers as handler
 from flask_sqlalchemy import SQLAlchemy
-from app.instance.config import DevelopmentConfig
 
 
 db = SQLAlchemy()
 
 
-def create_app(config_class=DevelopmentConfig):
-    app = FlaskAPI(__name__)
-    app.config.from_object(config_class)
+def create_app(env_file):
+    app = FlaskAPI(__name__, instance_relative_config=True)
+    # Load the default configuration
+    app.config.from_object('config.default')
+
+    # Load the configuration from the instance folder
+    app.config.from_pyfile('config.py')
+
+    # Load the file specified by the APP_CONFIG_FILE environment variable
+    # Variables defined here will override those in the default configuration
+    app.config.from_envvar(env_file)
+
     db.init_app(app)
     db.app = app
 

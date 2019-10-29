@@ -79,7 +79,7 @@ def update_by_id(id):
     if updated_user is None:
         raise BadRequest("None exist user")
 
-    try: 
+    try:
         updated_user.username = request_json_body["name"]
         db.session.commit()
     except exc.IntegrityError:

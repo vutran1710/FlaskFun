@@ -173,4 +173,4 @@ def test_delete_all(app):
 
     assert response.status_code == 200
     response_body = response.get_json()
-    assert response_body['deleted_users'] == test_users
+    assert response_body['deleted_users_id'] == [u['id'] for u in test_users]

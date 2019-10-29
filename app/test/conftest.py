@@ -1,11 +1,11 @@
 import pytest
-from app import create_app, db, instance
-from app.models import User, University
+from app import create_app, db
+from app.models import User
 
 
 @pytest.fixture
 def app():
-    app = create_app(instance.config.TestConfig)
+    app = create_app('APP_CONFIG_TEST_FILE')
 
     user0 = User("Son", "n.vanson@gmail.com")
     user1 = User("Hoan", "n.vanhoan@gmail.com")
