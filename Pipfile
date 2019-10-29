@@ -8,6 +8,7 @@ pylint = "*"
 jedi = "*"
 flake8 = "*"
 pytest = "*"
+pytest-cov = "*"
 
 [packages]
 flask = "*"
@@ -21,4 +22,4 @@ python_version = "3.7"
 
 [scripts]
 dev = "pipenv run python ./run.py"
-test = "pipenv run python -m pytest -vv"
+test = "pipenv run python -m pytest -vv --cov=app"
