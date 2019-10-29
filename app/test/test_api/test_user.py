@@ -67,8 +67,9 @@ expected = [
         "name": "Bad Request"
     },
     {
-        "result": False,
-        "errors": {
+        "code": 400,
+        "name": "Invalid schema",
+        "description": {
             "gg": [
                 "unknown field"
             ],
@@ -78,8 +79,9 @@ expected = [
         }
     },
     {
-        "result": False,
-        "errors": {
+        "code": 400,
+        "name": "Invalid schema",
+        "description": {
             "email": [
                 "required field"
             ],

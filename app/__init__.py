@@ -1,4 +1,4 @@
-from werkzeug.exceptions import HTTPException, BadRequest
+from werkzeug.exceptions import BadRequest
 from flask_api import FlaskAPI
 import app.error_handlers as handler
 from flask_sqlalchemy import SQLAlchemy
@@ -17,7 +17,7 @@ def create_app(config_class=DevelopmentConfig):
     from app.models import User, University
     db.create_all()
 
-    app.register_error_handler(HTTPException, handler._generic_exception)
+    app.register_error_handler(Exception, handler._generic_exception)
     app.register_error_handler(BadRequest, handler._bad_request)
 
     from app.api import user, simple_data

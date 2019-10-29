@@ -3,7 +3,7 @@ from werkzeug.exceptions import BadRequest
 from app.models import User
 from app import db
 from cerberus import Validator
-
+from sqlalchemy import exc
 
 schema = {
     'email': {
@@ -47,16 +47,19 @@ def add_user():
         raise BadRequest("Invalid: content type is not json!")
 
     request_json_body = request.get_json()
-    print(request_json_body)
 
     if validator.validate(request_json_body) is False:
-        return {'result': False, 'errors': validator.errors}, 400
+        return {"code": 400, "name": "Invalid schema", "description": validator.errors}, 400
 
     name = request_json_body['name']
     email = request_json_body['email']
     added_user = User(name, email)
-    db.session.add(added_user)
-    db.session.commit()
+    try:
+        db.session.add(added_user)
+        db.session.commit()
+    except exc.IntegrityError:
+        db.session().rollback()
+        raise BadRequest("Invalid: the user already exists!")
 
     return jsonify(added_user=added_user.serialize)
 
@@ -69,16 +72,26 @@ def update_by_id(id):
     request_json_body = request.get_json()
 
     if validator.validate(request_json_body) is False:
-        return {'result': False, 'errors': validator.errors}, 400
+        return {"code": 400, "name": "Invalid schema", "description": validator.errors}, 400
 
     updated_user = User.query.filter_by(id=id).first()
 
     if updated_user is None:
         raise BadRequest("None exist user")
 
-    updated_user.username = request_json_body["name"]
-    updated_user.email = request_json_body["email"]
-    db.session.commit()
+    try: 
+        updated_user.username = request_json_body["name"]
+        db.session.commit()
+    except exc.IntegrityError:
+        db.session().rollback()
+        raise BadRequest("Invalid: the username already exists!")
+
+    try:
+        updated_user.email = request_json_body["email"]
+        db.session.commit()
+    except exc.IntegrityError:
+        db.session().rollback()
+        raise BadRequest("Invalid: the email already exists!")
 
     return jsonify(updated_user=updated_user.serialize)
 
@@ -102,4 +115,4 @@ def delete_all_user():
     User.query.delete()
     db.session.commit()
 
-    return jsonify(deleted_users=[u.serialize for u in deleted_users])
+    return jsonify(deleted_users_id=[u.id for u in deleted_users])
