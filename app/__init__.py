@@ -22,7 +22,7 @@ def create_app(env_file):
     db.init_app(app)
     db.app = app
 
-    from app.models import User, University
+    from app.models import User
     db.create_all()
 
     app.register_error_handler(Exception, handler._generic_exception)

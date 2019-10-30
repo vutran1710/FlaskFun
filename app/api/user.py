@@ -49,7 +49,7 @@ def add_user():
     request_json_body = request.get_json()
 
     if validator.validate(request_json_body) is False:
-        return {"code": 400, "name": "Invalid schema", "description": validator.errors}, 400
+        raise BadRequest(validator.errors)
 
     name = request_json_body['name']
     email = request_json_body['email']
@@ -72,7 +72,7 @@ def update_by_id(id):
     request_json_body = request.get_json()
 
     if validator.validate(request_json_body) is False:
-        return {"code": 400, "name": "Invalid schema", "description": validator.errors}, 400
+        raise BadRequest(validator.errors)
 
     updated_user = User.query.filter_by(id=id).first()
 

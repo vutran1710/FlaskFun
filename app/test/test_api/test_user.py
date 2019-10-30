@@ -68,7 +68,6 @@ expected = [
     },
     {
         "code": 400,
-        "name": "Invalid schema",
         "description": {
             "gg": [
                 "unknown field"
@@ -76,19 +75,20 @@ expected = [
             "name": [
                 "required field"
             ]
-        }
+        },
+        "name": "Bad Request"
     },
     {
         "code": 400,
-        "name": "Invalid schema",
         "description": {
-            "email": [
-                "required field"
-            ],
             "xx": [
                 "unknown field"
+            ],
+            "email": [
+                "required field"
             ]
-        }
+        },
+        "name": "Bad Request"
     }
 ]
 
