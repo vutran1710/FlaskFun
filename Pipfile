@@ -7,16 +7,19 @@ verify_ssl = true
 pylint = "*"
 jedi = "*"
 flake8 = "*"
+pytest = "*"
+pytest-cov = "*"
 
 [packages]
 flask = "*"
 flask-api = "*"
 flask-sqlalchemy = "*"
 psycopg2-binary = "*"
-sqlalchemy-utils = "*"
+cerberus = "*"
 
 [requires]
 python_version = "3.7"
 
 [scripts]
 dev = "pipenv run python ./run.py"
+test = "pipenv run python -m pytest -vv --cov=app"

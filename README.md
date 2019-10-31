@@ -53,7 +53,11 @@ $ pipenv run dev
 ```
 sudo docker-compose up -d
 ```
-2. Run app:
+2. Run test:
+```
+pipenv run test
+```
+3. Run app:
 ```
 pipenv run dev
 ```

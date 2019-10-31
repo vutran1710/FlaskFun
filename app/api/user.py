@@ -2,8 +2,25 @@ from flask import request, jsonify, Blueprint
 from werkzeug.exceptions import BadRequest
 from app.models import User
 from app import db
+from cerberus import Validator
+from sqlalchemy import exc
 
+schema = {
+    'email': {
+        'type':        'string',
+        'required':    True,
+        'empty':       False,
+        'maxlength':   128
+    },
+    'name': {
+        'type':      'string',
+        'required':  True,
+        'empty':     False,
+        'maxlength': 128
+    },
+}
 
+validator = Validator(schema)
 bp = Blueprint('user', __name__)
 
 
@@ -31,42 +48,50 @@ def add_user():
 
     request_json_body = request.get_json()
 
-    if 'name' not in request_json_body:
-        raise BadRequest("None username!")
-
-    if 'email' not in request_json_body:
-        raise BadRequest("None email!")
+    if validator.validate(request_json_body) is False:
+        raise BadRequest(validator.errors)
 
     name = request_json_body['name']
     email = request_json_body['email']
     added_user = User(name, email)
-    db.session.add(added_user)
-    db.session.commit()
+    try:
+        db.session.add(added_user)
+        db.session.commit()
+    except exc.IntegrityError:
+        db.session().rollback()
+        raise BadRequest("Invalid: the user already exists!")
 
     return jsonify(added_user=added_user.serialize)
 
 
 @bp.route('/api/user/<int:id>', methods=['PATCH'])
 def update_by_id(id):
-    request_json_body = request.get_json()
-
     if not request.is_json:
         raise BadRequest("Invalid: content type is not json!")
 
-    if "name" not in request_json_body:
-        raise BadRequest("Request body does have key named name!")
+    request_json_body = request.get_json()
 
-    if "email" not in request_json_body:
-        raise BadRequest("Request body does have key named email!")
+    if validator.validate(request_json_body) is False:
+        raise BadRequest(validator.errors)
 
     updated_user = User.query.filter_by(id=id).first()
 
     if updated_user is None:
         raise BadRequest("None exist user")
 
-    updated_user.username = request_json_body["name"]
-    updated_user.email = request_json_body["email"]
-    db.session.commit()
+    try:
+        updated_user.username = request_json_body["name"]
+        db.session.commit()
+    except exc.IntegrityError:
+        db.session().rollback()
+        raise BadRequest("Invalid: the username already exists!")
+
+    try:
+        updated_user.email = request_json_body["email"]
+        db.session.commit()
+    except exc.IntegrityError:
+        db.session().rollback()
+        raise BadRequest("Invalid: the email already exists!")
 
     return jsonify(updated_user=updated_user.serialize)
 
@@ -82,3 +107,12 @@ def delete_by_id(id):
     db.session.commit()
 
     return jsonify(deleted_user=deleted_user.serialize)
+
+
+@bp.route('/api/user', methods=['DELETE'])
+def delete_all_user():
+    deleted_users = User.query.all()
+    User.query.delete()
+    db.session.commit()
+
+    return jsonify(deleted_users_id=[u.id for u in deleted_users])
