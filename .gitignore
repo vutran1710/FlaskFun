@@ -66,3 +66,5 @@ typings/
 .vscode/
 __pycache__/
 .cache/
+.coverage
+

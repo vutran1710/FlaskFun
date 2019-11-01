@@ -3,10 +3,11 @@ from flask_api import FlaskAPI
 import app.error_handlers as handler
 from flask_sqlalchemy import SQLAlchemy
 
+
 db = SQLAlchemy()
 
 
-def create_app():
+def create_app(env_file):
     app = FlaskAPI(__name__, instance_relative_config=True)
     # Load the default configuration
     app.config.from_object('config.default')
@@ -16,12 +17,13 @@ def create_app():
 
     # Load the file specified by the APP_CONFIG_FILE environment variable
     # Variables defined here will override those in the default configuration
-    # app.config.from_envvar(env_file)
+    app.config.from_envvar(env_file)
 
     db.init_app(app)
     db.app = app
 
     from app.models import User, UserProfile
+
     db.create_all()
 
     app.register_error_handler(Exception, handler._generic_exception)
