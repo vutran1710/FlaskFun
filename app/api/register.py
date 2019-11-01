@@ -1,6 +1,6 @@
 from flask import request, jsonify, Blueprint
 from werkzeug.exceptions import BadRequest
-from app.models import User
+from app.models import User, UserProfile
 from app import db
 from app.validator.extended import ValidatorExtended
 from sqlalchemy import exc
@@ -47,10 +47,16 @@ def register_user():
     username = request_json_body['name']
     email = request_json_body['email']
     password = request_json_body['password']
+    
     added_user = User(username, email)
     added_user.password = password
+    user_profile_added = UserProfile()
+    user_profile_added2 = UserProfile()
+    added_user.user_profile.append(user_profile_added)
+    added_user.user_profile.append(user_profile_added2)
     try:
         db.session.add(added_user)
+        db.session.add(user_profile_added)
         db.session.commit()
     except exc.IntegrityError:
         db.session().rollback()

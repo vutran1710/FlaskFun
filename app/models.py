@@ -6,7 +6,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(120), unique=True, nullable=True)
+    password = db.Column(db.String(120), unique=False, nullable=True)
     user_profile = db.relationship("UserProfile", backref=db.backref("user", uselist=False), passive_deletes=True)
 
     def __init__(self, username, email):
@@ -31,10 +31,6 @@ class UserProfile(db.Model):
     name = db.Column(db.String(120), nullable=True)
     age = db.Column(db.Integer, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', onupdate="CASCADE", ondelete="CASCADE"))
-
-    def __init__(self, name, age):
-        self.name = name
-        self.age = age
 
     @property
     def serialize(self):
