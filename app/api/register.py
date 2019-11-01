@@ -47,7 +47,7 @@ def register_user():
     username = request_json_body['name']
     email = request_json_body['email']
     password = request_json_body['password']
-    
+
     added_user = User(username, email)
     added_user.password = password
     user_profile_added = UserProfile()
