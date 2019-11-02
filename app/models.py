@@ -7,11 +7,15 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), unique=False, nullable=True)
+    email_confirmation_sent_on = db.Column(db.DateTime, nullable=True)
+    email_confirmed = db.Column(db.Boolean, nullable=True, default=False)
+    email_confirmed_on = db.Column(db.DateTime, nullable=True)
     user_profile = db.relationship("UserProfile", backref=db.backref("user", uselist=False), passive_deletes=True)
 
     def __init__(self, username, email):
         self.username = username
         self.email = email
+        
 
     @property
     def serialize(self):
