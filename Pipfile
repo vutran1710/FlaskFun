@@ -9,6 +9,7 @@ jedi = "*"
 flake8 = "*"
 pytest = "*"
 pytest-cov = "*"
+autopep8 = "*"
 
 [packages]
 flask = "*"
@@ -25,5 +26,5 @@ Flask-Bcrypt = "*"
 python_version = "3.7"
 
 [scripts]
-dev = "pipenv run python ./run.py"
-test = "pipenv run python -m pytest -vv --cov=app"
+app = "python ./run.py"
+test = "env STAGE=test python -m pytest -vv --cov=app"

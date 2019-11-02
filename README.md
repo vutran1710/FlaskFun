@@ -29,7 +29,15 @@ $ pipenv install
 
 3. Run app
 ``` shell
-$ pipenv run dev
+$ pipenv run app
+```
+
+ Note: on production, run `STAGE=production pipenv run app`, or staging using same format with different STAGE
+
+4. Run test
+
+``` shell
+pipenv run test
 ```
 
 ## Tasks
@@ -65,28 +73,25 @@ $ pipenv run dev
 ```
 
 ## Running
-- Firstly, You need to create a `.env` file at root path. And then add `APP_CONFIG_DEV_FILE` and `APP_CONFIG_TEST_FILE` as 2  environment variables.
+- Firstly, You need to create a `.env` file at root path. And then add 4 lines
 ```
-APP_CONFIG_DEV_FILE = /home/.../magellan/config/development.py
-APP_CONFIG_TEST_FILE = /home/.../magellan/config/staging.py
-```
-- And then edit 3 following lines in the file `instance/config.py` by your own email address and password.
-```
-MAIL_USERNAME = 'your-email'
-MAIL_PASSWORD = 'your-password'
-MAIL_DEFAULT_SENDER = 'your-email'
+SECRET_KEY = your_secret_key
+JWT_SECRET_KEY = your_secret_key
+
+MAIL_USERNAME = your_server_email
+MAIL_PASSWORD = your_password
 ```
 
 After that run following commands to run the app:
 1. Build docker-compose
-```
+```shell
 sudo docker-compose up -d
 ```
 2. Run test:
-```
+```shell
 pipenv run test
 ```
 3. Run app:
-```
-pipenv run dev
+```shell
+pipenv run app
 ```
