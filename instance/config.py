@@ -1,10 +1,9 @@
 DEBUG = True
 TESTING = False
 
+
 SECRET_KEY = 'LUHAWKFLUAH((*%%@$#DHA))'
 
-APP_CONFIG_DEV_FILE = '/home/alex/Learn/magellan/config/development.py'
-APP_CONFIG_TEST_FILE = '/home/alex/Learn/magellan/config/staging.py'
 
 MAIL_SERVER = 'smtp.googlemail.com'
 MAIL_PORT = 465
