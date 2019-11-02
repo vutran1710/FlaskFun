@@ -18,6 +18,8 @@ psycopg2-binary = "*"
 cerberus = "*"
 itsdangerous = "*"
 flask-mail = "*"
+Flask-JWT-Extended = "*"
+Flask-Bcrypt = "*"
 
 [requires]
 python_version = "3.7"

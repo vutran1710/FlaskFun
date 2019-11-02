@@ -3,10 +3,15 @@ from flask_api import FlaskAPI
 import app.error_handlers as handler
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
+from datetime import datetime
+from flask_jwt_extended import JWTManager
+from flask_bcrypt import Bcrypt
 
 
 db = SQLAlchemy()
 mail = Mail()
+flask_bcrypt = Bcrypt()
+jwt = JWTManager()
 
 
 def create_app(env_file):
@@ -24,6 +29,8 @@ def create_app(env_file):
     db.init_app(app)
     db.app = app
     mail.init_app(app)
+    flask_bcrypt.init_app(app)
+    jwt.init_app(app)
 
     from app.models import User, UserProfile
 
@@ -32,10 +39,11 @@ def create_app(env_file):
     app.register_error_handler(Exception, handler._generic_exception)
     app.register_error_handler(BadRequest, handler._bad_request)
 
-    from app.api import user, simple_data, register
+    from app.api import user, simple_data, register, login
     app.register_blueprint(user.bp)
     app.register_blueprint(simple_data.bp)
     app.register_blueprint(register.bp)
+    app.register_blueprint(login.bp)
 
     return app
 

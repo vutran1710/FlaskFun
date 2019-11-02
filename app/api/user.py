@@ -4,6 +4,7 @@ from app.models import User
 from app import db
 from cerberus import Validator
 from sqlalchemy import exc
+from flask_jwt_extended import jwt_required
 
 schema = {
     'email': {
@@ -25,6 +26,7 @@ bp = Blueprint('user', __name__)
 
 
 @bp.route('/api/user', methods=['GET'])
+@jwt_required
 def get_all_user():
     users = User.query.all()
 
