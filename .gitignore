@@ -67,5 +67,5 @@ typings/
 __pycache__/
 .cache/
 .coverage
-.instance
+.instance/
 
