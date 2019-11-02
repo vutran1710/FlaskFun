@@ -16,6 +16,8 @@ flask-api = "*"
 flask-sqlalchemy = "*"
 psycopg2-binary = "*"
 cerberus = "*"
+itsdangerous = "*"
+flask-mail = "*"
 
 [requires]
 python_version = "3.7"
