@@ -2,9 +2,10 @@ from werkzeug.exceptions import BadRequest
 from flask_api import FlaskAPI
 import app.error_handlers as handler
 from flask_sqlalchemy import SQLAlchemy
-
+from flask_mail import Mail
 
 db = SQLAlchemy()
+mail = Mail()
 
 
 def create_app(env_file):
@@ -21,6 +22,7 @@ def create_app(env_file):
 
     db.init_app(app)
     db.app = app
+    mail.init_app(app)
 
     from app.models import User, UserProfile
 
@@ -35,3 +37,6 @@ def create_app(env_file):
     app.register_blueprint(register.bp)
 
     return app
+
+
+app = create_app('APP_CONFIG_DEV_FILE')

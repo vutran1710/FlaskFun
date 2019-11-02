@@ -68,3 +68,5 @@ __pycache__/
 .cache/
 .coverage
 
+instance/
+
