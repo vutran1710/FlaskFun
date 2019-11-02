@@ -29,7 +29,16 @@ $ pipenv install
 
 3. Run app
 ``` shell
-$ pipenv run dev
+$ pipenv run app
+```
+
+ Note: on production, run `STAGE=production pipenv run app`, or staging using same format with different STAGE
+
+4. Run test
+
+``` shell
+$ STAGE=test pipenv run test
+# should fix this: no need inject stage manually, test code should inject the STAGE automatically
 ```
 
 ## Tasks
