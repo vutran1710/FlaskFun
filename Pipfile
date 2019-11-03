@@ -23,5 +23,4 @@ python_version = "3.7"
 
 [scripts]
 app = "python ./run.py"
-test = "env STAGE=test python -m pytest -vv --cov=app"
-
+test = "python -m pytest -vv --cov=app"
