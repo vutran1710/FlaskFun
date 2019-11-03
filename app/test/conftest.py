@@ -1,3 +1,4 @@
+import os
 import pytest
 from app import create_app, db
 from app.models import User
@@ -5,6 +6,7 @@ from app.models import User
 
 @pytest.fixture
 def app():
+    os.environ['STAGE'] = 'test'
     app = create_app()
 
     user0 = User("Son", "n.vanson@gmail.com")
