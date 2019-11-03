@@ -5,7 +5,7 @@ from app.models import User
 
 @pytest.fixture
 def app():
-    app = create_app('APP_CONFIG_TEST_FILE')
+    app = create_app()
 
     user0 = User("Son", "n.vanson@gmail.com")
     user1 = User("Hoan", "n.vanhoan@gmail.com")

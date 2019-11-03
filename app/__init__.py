@@ -1,3 +1,4 @@
+import os
 from werkzeug.exceptions import BadRequest
 from flask_api import FlaskAPI
 import app.error_handlers as handler
@@ -7,17 +8,16 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
-def create_app(env_file):
+def create_app():
+    STAGE = os.getenv('STAGE') or 'development'
+    CONFIG_PATH = os.getcwd() + '/config/' + STAGE + '.py'
+
+    if not os.path.isfile(CONFIG_PATH):
+        raise Exception('invalid stage config')
+
     app = FlaskAPI(__name__, instance_relative_config=True)
-    # Load the default configuration
     app.config.from_object('config.default')
-
-    # Load the configuration from the instance folder
-    app.config.from_pyfile('config.py')
-
-    # Load the file specified by the APP_CONFIG_FILE environment variable
-    # Variables defined here will override those in the default configuration
-    app.config.from_envvar(env_file)
+    app.config.from_pyfile(CONFIG_PATH)
 
     db.init_app(app)
     db.app = app
@@ -33,3 +33,6 @@ def create_app(env_file):
     app.register_blueprint(simple_data.bp)
 
     return app
+
+
+app = create_app()
