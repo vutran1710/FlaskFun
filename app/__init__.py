@@ -27,9 +27,10 @@ def create_app():
     app.register_error_handler(Exception, handler._generic_exception)
     app.register_error_handler(BadRequest, handler._bad_request)
 
-    from app.api import user, simple_data
+    from app.api import user, simple_data, register
     app.register_blueprint(user.bp)
     app.register_blueprint(simple_data.bp)
+    app.register_blueprint(register.bp)
 
     return app
 
