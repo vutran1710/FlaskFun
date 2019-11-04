@@ -6,8 +6,8 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=True)
-    user_activated = db.Column(db.Boolean, nullable=True, default=False)
-    user_profile = db.relationship("UserProfile", backref=db.backref("user", uselist=False), passive_deletes=True)
+    activated = db.Column(db.Boolean, nullable=True, default=False)
+    profile = db.relationship("UserProfile", backref=db.backref("user", uselist=False), passive_deletes=True)
 
     def __init__(self, username, email):
         self.username = username

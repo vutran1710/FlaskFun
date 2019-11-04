@@ -16,13 +16,12 @@ def create_app():
         raise Exception('invalid stage config')
 
     app = FlaskAPI(__name__, instance_relative_config=True)
-    app.config.from_object('config.default')
     app.config.from_pyfile(CONFIG_PATH)
 
     db.init_app(app)
     db.app = app
 
-    from app.models import User
+    from app.models import User # noqa
     db.create_all()
 
     app.register_error_handler(Exception, handler._generic_exception)
