@@ -37,7 +37,7 @@ def test_get_id_false(app):
 
 
 def test_post(app):
-    data_sended = {"name": "zafwfawfzzz", "email": "n.zzfawfawefz.2209@gmail.com"}
+    data_sended = {"name": "zafwfawfzzz", "email": "n.zzfawfawefz.2209@gmail.com", "password": "1234567gG"}
     response = app.test_client().post('/api/user',
                                       data=json.dumps(data_sended),
                                       content_type='application/json',)
@@ -46,12 +46,13 @@ def test_post(app):
     response_body = response.get_json()
     assert response_body['added_user']['username'] == data_sended['name']
     assert response_body['added_user']['email'] == data_sended['email']
+    assert response_body['added_user']['password'] == data_sended['password']
 
 
 data_sended = [
     "hello",
-    {"gg": "zafwfawfzzz", "email": "n.zzfawfawefz.2209@gmail.com"},
-    {"name": "zafwfawfzzz", "xx": "n.zzfawfawefz.2209@gmail.com"}
+    {"gg": "zafwfawfzzz", "email": "n.zzfawfawefz.2209@gmail.com", "password": "1234567hH"},
+    {"name": "zafwfawfzzz", "xx": "n.zzfawfawefz.2209@gmail.com", "password": "1234567jJ" }
 ]
 
 content_type = [
