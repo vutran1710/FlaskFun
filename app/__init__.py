@@ -3,9 +3,11 @@ from werkzeug.exceptions import BadRequest
 from flask_api import FlaskAPI
 import app.error_handlers as handler
 from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
 
 
 db = SQLAlchemy()
+bcrypt = Bcrypt()
 
 
 def create_app():
@@ -20,6 +22,7 @@ def create_app():
 
     db.init_app(app)
     db.app = app
+    bcrypt.init_app(app)
 
     from app.models import User # noqa
     db.create_all()

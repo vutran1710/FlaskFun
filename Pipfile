@@ -17,6 +17,7 @@ flask-api = "*"
 flask-sqlalchemy = "*"
 psycopg2-binary = "*"
 cerberus = "*"
+flask-bcrypt = "*"
 
 [requires]
 python_version = "3.7"
