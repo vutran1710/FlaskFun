@@ -21,12 +21,15 @@ def test_get(app):
         assert response_body['users'][i]["email"] == test_users[i]["email"]
         assert bcrypt.check_password_hash(response_body['users'][i]["password"], test_users[i]["password"])
 
+
 def test_get_id(app):
     for i in range(6):
         response = app.test_client().get('/api/user/{}'.format(i+1))
         assert response.status_code == 200
         response_body = response.get_json()
-        assert response_body['user'] == test_users[i]
+        assert response_body['user']["username"] == test_users[i]["username"]
+        assert response_body['user']["email"] == test_users[i]["email"]
+        assert bcrypt.check_password_hash(response_body['user']["password"], test_users[i]["password"])
 
 
 def test_get_id_false(app):
@@ -48,7 +51,7 @@ def test_post(app):
     response_body = response.get_json()
     assert response_body['added_user']['username'] == data_sended['name']
     assert response_body['added_user']['email'] == data_sended['email']
-    assert response_body['added_user']['password'] == data_sended['password']
+    assert bcrypt.check_password_hash(response_body['added_user']["password"], data_sended["password"])
 
 
 data_sended = [
@@ -122,7 +125,7 @@ def test_patch(app):
     response_body = response.get_json()
     assert response_body['updated_user']['username'] == data_sended['name']
     assert response_body['updated_user']['email'] == data_sended['email']
-    assert response_body['updated_user']['password'] == data_sended['password']
+    assert bcrypt.check_password_hash(response_body['updated_user']["password"], data_sended["password"])
 
 
 @pytest.mark.parametrize("data_sended, content_type, expected",

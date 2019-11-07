@@ -22,7 +22,7 @@ class User(db.Model):
 
     @password.setter
     def password(self, plaintext_password):
-        self._password = bcrypt.generate_password_hash(plaintext_password)
+        self._password = bcrypt.generate_password_hash(plaintext_password).decode('utf8')
 
     @hybrid_method
     def is_correct_password(self, plaintext_password):

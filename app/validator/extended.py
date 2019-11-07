@@ -1,11 +1,8 @@
 from cerberus import Validator
+import re
 
 
 class ValidatorExtended(Validator):
-    def _validate_contain_uppercase(self, contain_uppercase, field, value):
-        if contain_uppercase and (value == value.lower()):
-            self._error(field, "Password need contains at least one uppercase")
-
-    def _validate_contain_lowercase(self, contain_lowercase, field, value):
-        if contain_lowercase and (value == value.upper()):
-            self._error(field, "Password need contains at least one lowercase")
+    def _validate_valid_password(self, valid_password, field, value):
+        if valid_password and re.match(r"^(?=.*[A-Z])(?=.*[a-z]).{8,}$", value) is None:
+            self._error(field, "Password must contain at least 8 characters, one uppercase and one lowercase letter")

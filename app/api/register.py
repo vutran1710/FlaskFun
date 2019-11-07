@@ -23,9 +23,7 @@ schema = {
         'required':  True,
         'empty':     False,
         'maxlength': 128,
-        'contain_uppercase': True,
-        'contain_lowercase': True,
-        'minlength': 8
+        'valid_password': True
     }
 }
 
