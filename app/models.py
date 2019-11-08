@@ -11,14 +11,10 @@ class User(db.Model):
     activated = db.Column(db.Boolean, nullable=True, default=False)
     profile = db.relationship("UserProfile", backref=db.backref("user", uselist=False), passive_deletes=True)
 
-    def __init__(self, username, email, plaintext_password):
+    def __init__(self, username, email, password):
         self.username = username
         self.email = email
-        self.password = bcrypt.generate_password_hash(plaintext_password).decode('utf8')
-
-    @hybrid_method
-    def is_correct_password(self, plaintext_password):
-        return bcrypt.check_password_hash(self.password, plaintext_password)
+        self.password = password
 
     @property
     def serialize(self):

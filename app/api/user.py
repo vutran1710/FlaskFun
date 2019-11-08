@@ -61,7 +61,7 @@ def add_user():
 
     name = request_json_body['name']
     email = request_json_body['email']
-    password = request_json_body['password']
+    password = bcrypt.generate_password_hash(request_json_body['password']).decode('utf8')
     added_user = User(name, email, password)
     try:
         db.session.add(added_user)
