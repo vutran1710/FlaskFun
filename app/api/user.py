@@ -2,6 +2,7 @@ from flask import request, jsonify, Blueprint
 from werkzeug.exceptions import BadRequest
 from app.models import User
 from app import db
+from app import bcrypt
 from app.validator.extended import ValidatorExtended
 from sqlalchemy import exc
 
@@ -89,7 +90,7 @@ def update_by_id(id):
 
     try:
         updated_user.username = request_json_body["name"]
-        updated_user.password = request_json_body["password"]
+        updated_user.password = bcrypt.generate_password_hash(request_json_body["password"]).decode('utf8')
         db.session.commit()
     except exc.IntegrityError:
         db.session().rollback()
