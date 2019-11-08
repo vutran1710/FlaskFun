@@ -10,6 +10,13 @@
 - API Documentation
 - Docker experience and setting up Database
 
+# Training Week 3
+- Higher-Order Function and Decorator
+- Registration and Mailer
+- Authentication with JWT
+
+--
+
 ## Setup
 
 ##### Backend
@@ -22,7 +29,15 @@ $ pipenv install
 
 3. Run app
 ``` shell
-$ pipenv run dev
+$ pipenv run app
+```
+
+ Note: on production, run `STAGE=production pipenv run app`, or staging using same format with different STAGE
+
+4. Run test
+
+``` shell
+pipenv run test
 ```
 
 ## Tasks
@@ -38,7 +53,7 @@ $ pipenv run dev
 ```
 
 
-- [ ] Writing Error Handler and learning to handle different types of exception in different scenarios
+- [x] Writing Error Handler and learning to handle different types of exception in different scenarios
 
 ```
 1. Write BadRequest Handler
@@ -48,16 +63,11 @@ $ pipenv run dev
 5. Document API with text-based REST-Client
 ```
 
-## Running
-1. Build docker-compose
+- [ ] Registration & Authentication Strategy
+
 ```
-sudo docker-compose up -d
-```
-2. Run test:
-```
-pipenv run test
-```
-3. Run app:
-```
-pipenv run dev
+1. Re-design User Schema
+2. Write Public API for User Registration
+3. Send email to newly registered user for Activation Request
+4. Write Public API for User Login, authenticated using JWT
 ```

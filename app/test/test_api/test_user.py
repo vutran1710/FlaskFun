@@ -1,14 +1,14 @@
 import json
 import pytest
-
+from app import bcrypt
 
 test_users = [
-        {"id": 1, "username": "Son", "email": "n.vanson@gmail.com"},
-        {"id": 2, "username": "Hoan", "email": "n.vanhoan@gmail.com"},
-        {"id": 3, "username": "Lam", "email": "n.tunglam@gmail.com"},
-        {"id": 4, "username": "Hung", "email": "n.vanhung@gmail.com"},
-        {"id": 5, "username": "Nam", "email": "n.huynam@gmail.com"},
-        {"id": 6, "username": "Viet", "email": "n.vanviet@gmail.com"}
+        {"id": 1, "username": "Son", "email": "n.vanson@gmail.com", "password": "1234567aA"},
+        {"id": 2, "username": "Hoan", "email": "n.vanhoan@gmail.com", "password": "1234567bB"},
+        {"id": 3, "username": "Lam", "email": "n.tunglam@gmail.com", "password": "1234567cC"},
+        {"id": 4, "username": "Hung", "email": "n.vanhung@gmail.com", "password": "1234567dD"},
+        {"id": 5, "username": "Nam", "email": "n.huynam@gmail.com", "password": "1234567eE"},
+        {"id": 6, "username": "Viet", "email": "n.vanviet@gmail.com", "password": "1234567fF"}
 ]
 
 
@@ -16,7 +16,10 @@ def test_get(app):
     response = app.test_client().get('/api/user')
     assert response.status_code == 200
     response_body = response.get_json()
-    assert response_body['users'] == test_users
+    for i in range(6):
+        assert response_body['users'][i]["username"] == test_users[i]["username"]
+        assert response_body['users'][i]["email"] == test_users[i]["email"]
+        assert bcrypt.check_password_hash(response_body['users'][i]["password"], test_users[i]["password"])
 
 
 def test_get_id(app):
@@ -24,7 +27,9 @@ def test_get_id(app):
         response = app.test_client().get('/api/user/{}'.format(i+1))
         assert response.status_code == 200
         response_body = response.get_json()
-        assert response_body['user'] == test_users[i]
+        assert response_body['user']["username"] == test_users[i]["username"]
+        assert response_body['user']["email"] == test_users[i]["email"]
+        assert bcrypt.check_password_hash(response_body['user']["password"], test_users[i]["password"])
 
 
 def test_get_id_false(app):
@@ -37,7 +42,7 @@ def test_get_id_false(app):
 
 
 def test_post(app):
-    data_sended = {"name": "zafwfawfzzz", "email": "n.zzfawfawefz.2209@gmail.com"}
+    data_sended = {"name": "zafwfawfzzz", "email": "n.zzfawfawefz.2209@gmail.com", "password": "1234567gG"}
     response = app.test_client().post('/api/user',
                                       data=json.dumps(data_sended),
                                       content_type='application/json',)
@@ -46,12 +51,13 @@ def test_post(app):
     response_body = response.get_json()
     assert response_body['added_user']['username'] == data_sended['name']
     assert response_body['added_user']['email'] == data_sended['email']
+    assert bcrypt.check_password_hash(response_body['added_user']["password"], data_sended["password"])
 
 
 data_sended = [
     "hello",
-    {"gg": "zafwfawfzzz", "email": "n.zzfawfawefz.2209@gmail.com"},
-    {"name": "zafwfawfzzz", "xx": "n.zzfawfawefz.2209@gmail.com"}
+    {"gg": "zafwfawfzzz", "email": "n.zzfawfawefz.2209@gmail.com", "password": "1234567hH"},
+    {"name": "zafwfawfzzz", "xx": "n.zzfawfawefz.2209@gmail.com", "password": "1234567jJ" }
 ]
 
 content_type = [
@@ -110,7 +116,7 @@ def test_post_fail(app, data_sended, content_type, expected):
 
 
 def test_patch(app):
-    data_sended = {"name": "Hiep", "email": "n.vanhiep@gmail.com"}
+    data_sended = {"name": "Hiep", "email": "n.vanhiep@gmail.com", "password": "axcdafwbA1"}
     response = app.test_client().patch('/api/user/5',
                                        data=json.dumps(data_sended),
                                        content_type='application/json',)
@@ -119,6 +125,7 @@ def test_patch(app):
     response_body = response.get_json()
     assert response_body['updated_user']['username'] == data_sended['name']
     assert response_body['updated_user']['email'] == data_sended['email']
+    assert bcrypt.check_password_hash(response_body['updated_user']["password"], data_sended["password"])
 
 
 @pytest.mark.parametrize("data_sended, content_type, expected",
@@ -138,7 +145,7 @@ def test_patch_fail1(app, data_sended, content_type, expected):
 
 
 def test_patch_fail2(app):
-    data_sended = {"name": "Hiep", "email": "n.vanhiep@gmail.com"}
+    data_sended = {"name": "Hiep", "email": "n.vanhiep@gmail.com", "password": "axcdafwbA1"}
     response = app.test_client().patch('/api/user/9',
                                        data=json.dumps(data_sended),
                                        content_type='application/json',)

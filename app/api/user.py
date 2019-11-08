@@ -2,7 +2,8 @@ from flask import request, jsonify, Blueprint
 from werkzeug.exceptions import BadRequest
 from app.models import User
 from app import db
-from cerberus import Validator
+from app import bcrypt
+from app.validator.extended import ValidatorExtended
 from sqlalchemy import exc
 
 schema = {
@@ -18,9 +19,16 @@ schema = {
         'empty':     False,
         'maxlength': 128
     },
+    'password': {
+        'type':      'string',
+        'required':  True,
+        'empty':     False,
+        'maxlength': 128,
+        'valid_password': True
+    }
 }
 
-validator = Validator(schema)
+validator = ValidatorExtended(schema)
 bp = Blueprint('user', __name__)
 
 
@@ -53,7 +61,8 @@ def add_user():
 
     name = request_json_body['name']
     email = request_json_body['email']
-    added_user = User(name, email)
+    password = bcrypt.generate_password_hash(request_json_body['password']).decode('utf8')
+    added_user = User(name, email, password)
     try:
         db.session.add(added_user)
         db.session.commit()
@@ -81,6 +90,7 @@ def update_by_id(id):
 
     try:
         updated_user.username = request_json_body["name"]
+        updated_user.password = bcrypt.generate_password_hash(request_json_body["password"]).decode('utf8')
         db.session.commit()
     except exc.IntegrityError:
         db.session().rollback()
