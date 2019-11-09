@@ -18,6 +18,8 @@ flask-sqlalchemy = "*"
 psycopg2-binary = "*"
 cerberus = "*"
 flask-bcrypt = "*"
+itsdangerous = "*"
+flask-mail = "*"
 
 [requires]
 python_version = "3.7"

@@ -4,10 +4,11 @@ from flask_api import FlaskAPI
 import app.error_handlers as handler
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-
+from flask_mail import Mail
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
+mail = Mail()
 
 
 def create_app():
@@ -18,11 +19,13 @@ def create_app():
         raise Exception('invalid stage config')
 
     app = FlaskAPI(__name__, instance_relative_config=True)
+    app.config.from_pyfile('config.py')
     app.config.from_pyfile(CONFIG_PATH)
 
     db.init_app(app)
     db.app = app
     bcrypt.init_app(app)
+    mail.init_app(app)
 
     from app.models import User # noqa
     db.create_all()
