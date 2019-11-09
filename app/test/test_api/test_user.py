@@ -57,11 +57,17 @@ def test_post(app):
 data_sended = [
     "hello",
     {"gg": "zafwfawfzzz", "email": "n.zzfawfawefz.2209@gmail.com", "password": "1234567hH"},
-    {"name": "zafwfawfzzz", "xx": "n.zzfawfawefz.2209@gmail.com", "password": "1234567jJ" }
+    {"name": "zafwfawfzzz", "xx": "n.zzfawfawefz.2209@gmail.com", "password": "1234567jJ"},
+    {"name": "zafwfawfzzz", "email": "n.zzfawfawefz.2209gmail.com", "password": "1234567jJ"},
+    {"name": "zafwfawfzzz", "email": "n.zzfawfawefz.2209@gmail.com", "password": "1"},
+    {"name": "Viet", "email": "n.vanviet@gmail.com", "password": "1234567fF"}
 ]
 
 content_type = [
     "text/html",
+    "application/json",
+    "application/json",
+    "application/json",
     "application/json",
     "application/json"
 ]
@@ -95,6 +101,29 @@ expected = [
             ]
         },
         "name": "Bad Request"
+    },
+    {
+        "code": 400,
+        "description": {
+            "email": [
+                "Invalid email"
+            ]
+        },
+        "name": "Bad Request"
+    },
+    {
+        "code": 400,
+        "description": {
+            "password": [
+                "Password must contain at least 8 characters, one uppercase and one lowercase letter"
+            ]
+        },
+        "name": "Bad Request"
+    },
+    {
+        "code": 400,
+        "description": "Invalid: the username or email already exist!",
+        "name": "Bad Request"
     }
 ]
 
@@ -103,7 +132,10 @@ expected = [
                          [
                              (data_sended[0], content_type[0], expected[0]),
                              (data_sended[1], content_type[1], expected[1]),
-                             (data_sended[2], content_type[2], expected[2])
+                             (data_sended[2], content_type[2], expected[2]),
+                             (data_sended[3], content_type[3], expected[3]),
+                             (data_sended[4], content_type[4], expected[4]),
+                             (data_sended[5], content_type[5], expected[5])
                          ],
                          )
 def test_post_fail(app, data_sended, content_type, expected):
@@ -132,7 +164,10 @@ def test_patch(app):
                          [
                              (data_sended[0], content_type[0], expected[0]),
                              (data_sended[1], content_type[1], expected[1]),
-                             (data_sended[2], content_type[2], expected[2])
+                             (data_sended[2], content_type[2], expected[2]),
+                             (data_sended[3], content_type[3], expected[3]),
+                             (data_sended[4], content_type[4], expected[4]),
+                             (data_sended[5], content_type[5], expected[5])
                          ],
                          )
 def test_patch_fail1(app, data_sended, content_type, expected):

@@ -11,7 +11,8 @@ schema = {
         'type':        'string',
         'required':    True,
         'empty':       False,
-        'maxlength':   128
+        'maxlength':   128,
+        'valid_email': True
     },
     'name': {
         'type':      'string',
@@ -32,6 +33,30 @@ validator = ValidatorExtended(schema)
 bp = Blueprint('user', __name__)
 
 
+def schema_required(func):
+    def wrapper(*args, **kwargs):
+        if not request.is_json:
+            raise BadRequest("Invalid: content type is not json!")
+
+        request_json_body = request.get_json()
+
+        if validator.validate(request_json_body) is False:
+            raise BadRequest(validator.errors)
+
+        name = request_json_body['name']
+        email = request_json_body['email']
+        password = bcrypt.generate_password_hash(request_json_body['password']).decode('utf8')
+        try:
+            new_user = func(name, email, password, *args, **kwargs)
+        except exc.IntegrityError:
+            db.session().rollback()
+            raise BadRequest("Invalid: the username or email already exist!")
+
+        return new_user
+
+    return wrapper
+
+
 @bp.route('/api/user', methods=['GET'])
 def get_all_user():
     users = User.query.all()
@@ -49,59 +74,29 @@ def get_by_id(id):
     return jsonify(user=users.serialize)
 
 
-@bp.route('/api/user', methods=['POST'])
-def add_user():
-    if not request.is_json:
-        raise BadRequest("Invalid: content type is not json!")
-
-    request_json_body = request.get_json()
-
-    if validator.validate(request_json_body) is False:
-        raise BadRequest(validator.errors)
-
-    name = request_json_body['name']
-    email = request_json_body['email']
-    password = bcrypt.generate_password_hash(request_json_body['password']).decode('utf8')
+@bp.route('/api/user', methods=['POST'], endpoint='add_user')
+@schema_required
+def add_user(name, email, password):
     added_user = User(name, email, password)
-    try:
-        db.session.add(added_user)
-        db.session.commit()
-    except exc.IntegrityError:
-        db.session().rollback()
-        raise BadRequest("Invalid: the user already exists!")
+    print(added_user.serialize)
+    db.session.add(added_user)
+    db.session.commit()
 
     return jsonify(added_user=added_user.serialize)
 
 
-@bp.route('/api/user/<int:id>', methods=['PATCH'])
-def update_by_id(id):
-    if not request.is_json:
-        raise BadRequest("Invalid: content type is not json!")
-
-    request_json_body = request.get_json()
-
-    if validator.validate(request_json_body) is False:
-        raise BadRequest(validator.errors)
-
+@bp.route('/api/user/<int:id>', methods=['PATCH'], endpoint='update_by_id')
+@schema_required
+def update_by_id(name, email, password, id):
     updated_user = User.query.filter_by(id=id).first()
 
     if updated_user is None:
         raise BadRequest("None exist user")
 
-    try:
-        updated_user.username = request_json_body["name"]
-        updated_user.password = bcrypt.generate_password_hash(request_json_body["password"]).decode('utf8')
-        db.session.commit()
-    except exc.IntegrityError:
-        db.session().rollback()
-        raise BadRequest("Invalid: the username already exists!")
-
-    try:
-        updated_user.email = request_json_body["email"]
-        db.session.commit()
-    except exc.IntegrityError:
-        db.session().rollback()
-        raise BadRequest("Invalid: the email already exists!")
+    updated_user.username = name
+    updated_user.email = email
+    updated_user.password = password
+    db.session.commit()
 
     return jsonify(updated_user=updated_user.serialize)
 
