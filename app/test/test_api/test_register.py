@@ -34,3 +34,23 @@ def test_register_fail(app, data_sended, content_type, expected):
     assert response.status_code == 400
     response_body = response.get_json()
     assert response_body == expected
+
+
+def test_confirm_email(app):
+    data_sended = {"name": "sonnguyen", "email": "khraxo95@gmail.com", "password": "1xxxxxxxAA"}
+    response_register = app.test_client().post('/api/register',
+                                               data=json.dumps(data_sended),
+                                               content_type='application/json',)
+
+    confirmation_token = response_register.get_json()['confirmation_token']
+
+    response_comfirm = app.test_client().get('/api/register/confirm/' + confirmation_token)
+
+    assert response_comfirm.status_code == 200
+    assert response_comfirm.get_json()['message'] == 'Thank you for confirming your email address.'
+    assert response_comfirm.get_json()['your_email'] == data_sended["email"]
+
+    response_comfirm = app.test_client().get('/api/register/confirm/' + confirmation_token)
+
+    assert response_comfirm.get_json()['message'] == "Account already confirmed. Please login."
+    

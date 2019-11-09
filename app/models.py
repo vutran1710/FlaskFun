@@ -1,6 +1,4 @@
 from app import db
-from app import bcrypt
-from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 
 
 class User(db.Model):
@@ -12,9 +10,9 @@ class User(db.Model):
     profile = db.relationship("UserProfile", backref=db.backref("user", uselist=False), passive_deletes=True)
 
     def __init__(self, username, email, password):
-        self.username = username
-        self.email = email
-        self.password = password
+            self.username = username
+            self.email = email
+            self.password = password
 
     @property
     def serialize(self):
