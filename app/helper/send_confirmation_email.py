@@ -1,18 +1,19 @@
 import os
+import datetime
 from flask import url_for
-from itsdangerous import URLSafeTimedSerializer
+import jwt
 from app.helper.send_email import send_email
-from app.api import register
-
-
-confirm_serializer = URLSafeTimedSerializer(os.getenv('SECRET_KEY'))
+from app.api import register # noqa
 
 
 def generate_confirmation_token(user_email):
-    return confirm_serializer.dumps(user_email, salt=os.getenv('SECURITY_PASSWORD_SALT'))
+    payload = {
+        'email': user_email,
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=30)
+    }
+    return jwt.encode(payload, os.getenv('JWT_SECRET_KEY'), algorithm='HS256')
 
 
 def send_confirmation_email(user_email, confirmation_token):
     confirm_url = url_for('register.confirm_email', token=confirmation_token, _external=True)
-
     send_email('Confirm Your Email Address', [user_email], confirm_url)

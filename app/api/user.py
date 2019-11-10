@@ -1,8 +1,9 @@
-from flask import jsonify, Blueprint
+from flask import request, jsonify, Blueprint
 from werkzeug.exceptions import BadRequest
 from app.models import User
-from app import db
+from app import db, bcrypt
 from app.decorator import schema_required
+from sqlalchemy import exc
 
 
 bp = Blueprint('user', __name__)
@@ -27,27 +28,44 @@ def get_by_id(id):
 
 @bp.route('/api/user', methods=['POST'], endpoint='add_user')
 @schema_required
-def add_user(name, email, password):
-    added_user = User(name, email, password)
-    print(added_user.serialize)
-    db.session.add(added_user)
-    db.session.commit()
+def add_user():
+    request_json_body = request.get_json()
+    name = request_json_body['name']
+    email = request_json_body['email']
+    password = bcrypt.generate_password_hash(request_json_body['password']).decode('utf8')
+
+    try:
+        added_user = User(name, email, password)
+        db.session.add(added_user)
+        db.session.commit()
+    except exc.IntegrityError:
+        db.session().rollback()
+        raise BadRequest("Invalid: the username or email already exist!")
 
     return jsonify(added_user=added_user.serialize)
 
 
 @bp.route('/api/user/<int:id>', methods=['PATCH'], endpoint='update_by_id')
 @schema_required
-def update_by_id(name, email, password, id):
+def update_by_id(id):
     updated_user = User.query.filter_by(id=id).first()
 
     if updated_user is None:
         raise BadRequest("None exist user")
 
-    updated_user.username = name
-    updated_user.email = email
-    updated_user.password = password
-    db.session.commit()
+    request_json_body = request.get_json()
+    name = request_json_body['name']
+    email = request_json_body['email']
+    password = bcrypt.generate_password_hash(request_json_body['password']).decode('utf8')
+
+    try:
+        updated_user.username = name
+        updated_user.email = email
+        updated_user.password = password
+        db.session.commit()
+    except exc.IntegrityError:
+        db.session().rollback()
+        raise BadRequest("Invalid: the username or email already exist!")
 
     return jsonify(updated_user=updated_user.serialize)
 

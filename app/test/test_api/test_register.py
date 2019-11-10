@@ -5,7 +5,7 @@ from app.test.test_api.test_user import data_sended, content_type, expected
 
 
 def test_register(app):
-    data_sended = {"name": "zafwfawfzzz", "email": "n.zzfawfawefz.2209@gmail.com", "password": "1234567gG"}
+    data_sended = {"name": "sonnguyen", "email": "khraxo95@gmail.com", "password": "1xxxxxxxAA"}
     response = app.test_client().post('/api/register',
                                       data=json.dumps(data_sended),
                                       content_type='application/json',)
@@ -53,4 +53,18 @@ def test_confirm_email(app):
     response_comfirm = app.test_client().get('/api/register/confirm/' + confirmation_token)
 
     assert response_comfirm.get_json()['message'] == "Account already confirmed. Please login."
-    
+
+
+@pytest.mark.skip(reason="Need to wait 30s")
+def test_confirm_email_fail(app):
+    data_sended = {"name": "sonnguyen", "email": "khraxo95@gmail.com", "password": "1xxxxxxxAA"}
+    response_register = app.test_client().post('/api/register',
+                                               data=json.dumps(data_sended),
+                                               content_type='application/json',)
+
+    confirmation_token = response_register.get_json()['confirmation_token']
+
+    import time
+    time.sleep(31)
+    response_comfirm = app.test_client().get('/api/register/confirm/' + confirmation_token)
+    assert response_comfirm.get_json()['message'] == "The confirmation link is invalid or has expired."
