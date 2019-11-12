@@ -52,7 +52,7 @@ def test_confirm_email(app):
 
     response_comfirm = app.test_client().get('/api/register/confirm/' + confirmation_token)
 
-    assert response_comfirm.get_json()['message'] == "Account already confirmed. Please login."
+    assert response_comfirm.get_json()['description'] == "Account already confirmed. Please login."
 
 
 @pytest.mark.skip(reason="Need to wait 30s")

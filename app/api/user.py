@@ -4,7 +4,7 @@ from app.models import User
 from app import db, bcrypt
 from app.decorator import schema_required
 from sqlalchemy import exc
-
+from app.user_schema import schema
 
 bp = Blueprint('user', __name__)
 
@@ -27,7 +27,7 @@ def get_by_id(id):
 
 
 @bp.route('/api/user', methods=['POST'], endpoint='add_user')
-@schema_required
+@schema_required(schema)
 def add_user():
     request_json_body = request.get_json()
     name = request_json_body['name']
@@ -46,7 +46,7 @@ def add_user():
 
 
 @bp.route('/api/user/<int:id>', methods=['PATCH'], endpoint='update_by_id')
-@schema_required
+@schema_required(schema)
 def update_by_id(id):
     updated_user = User.query.filter_by(id=id).first()
 

@@ -7,12 +7,15 @@ from app.models import User, UserProfile
 from app import db, bcrypt
 from app.decorator import schema_required
 from app.helper.send_confirmation_email import generate_confirmation_token, send_confirmation_email
+from app.user_schema import schema
+
 
 bp = Blueprint('register', __name__)
+token_whitelist = {}
 
 
 @bp.route('/api/register', methods=['POST'], endpoint='register_user')
-@schema_required
+@schema_required(schema)
 def register_user():
     request_json_body = request.get_json()
     name = request_json_body['name']
@@ -47,7 +50,7 @@ def confirm_email(token):
     user = User.query.filter_by(email=email).first()
 
     if user.activated:
-        return jsonify(message='Account already confirmed. Please login.')
+        raise BadRequest('Account already confirmed. Please login.')
     else:
         user.activated = True
         db.session.add(user)
