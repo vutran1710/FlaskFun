@@ -6,8 +6,9 @@ from app.helper.send_email import send_email
 from app.api import register # noqa
 
 
-def generate_confirmation_token(user_email):
+def generate_confirmation_token(user_id, user_email):
     payload = {
+        'id': user_id,
         'email': user_email,
         'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=30)
     }

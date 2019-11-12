@@ -33,7 +33,7 @@ def register_user():
         db.session().rollback()
         raise BadRequest("Invalid: the username or email already exist!")
 
-    confirmation_token = generate_confirmation_token(added_user.email)
+    confirmation_token = generate_confirmation_token(added_user.id, added_user.email)
     global token_whitelist
     token_whitelist[confirmation_token] = 1
     send_confirmation_email(added_user.email, confirmation_token)
@@ -45,16 +45,17 @@ def register_user():
 @bp.route('/api/register/confirm/<token>', methods=['GET'])
 def confirm_email(token):
     global token_whitelist
-    
+
     if token_whitelist[token.encode('utf-8')] == 0:
         raise BadRequest('Account already confirmed. Please login.')
 
     try:
         email = jwt.decode(token, os.getenv('JWT_SECRET_KEY'), algorithms=['HS256'])['email']
+        id = jwt.decode(token, os.getenv('JWT_SECRET_KEY'), algorithms=['HS256'])['id']
     except jwt.ExpiredSignatureError:
         raise BadRequest('The confirmation link is invalid or has expired.')
 
-    user = User.query.filter_by(email=email).first()
+    user = User.query.filter_by(id=id).first()
     user.activated = True
     db.session.add(user)
     db.session.commit()
