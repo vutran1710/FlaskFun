@@ -18,7 +18,7 @@ def get_all_user():
 
 @bp.route('/api/user/<int:id>', methods=['GET'])
 def get_by_id(id):
-    users = User.query.filter_by(id=id).first()
+    users = User.query.get(id)
 
     if users is None:
         raise BadRequest("None exist user")
@@ -48,7 +48,7 @@ def add_user():
 @bp.route('/api/user/<int:id>', methods=['PATCH'], endpoint='update_by_id')
 @schema_required(schema)
 def update_by_id(id):
-    updated_user = User.query.filter_by(id=id).first()
+    updated_user = User.query.get(id)
 
     if updated_user is None:
         raise BadRequest("None exist user")
@@ -72,7 +72,7 @@ def update_by_id(id):
 
 @bp.route('/api/user/<int:id>', methods=['DELETE'])
 def delete_by_id(id):
-    deleted_user = User.query.filter_by(id=id).first()
+    deleted_user = User.query.get(id)
 
     if deleted_user is None:
         raise BadRequest("None exist user")

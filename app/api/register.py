@@ -46,7 +46,7 @@ def register_user():
 def confirm_email(token):
     global token_whitelist
 
-    if token_whitelist[token.encode('utf-8')] == 0:
+    if token.encode('utf-8') not in token_whitelist:
         raise BadRequest('Account already confirmed. Please login.')
 
     try:
@@ -55,10 +55,10 @@ def confirm_email(token):
     except jwt.ExpiredSignatureError:
         raise BadRequest('The confirmation link is invalid or has expired.')
 
-    user = User.query.filter_by(id=id).first()
+    user = User.query.get(id)
     user.activated = True
     db.session.add(user)
     db.session.commit()
 
-    token_whitelist[token.encode('utf-8')] = 0
+    del token_whitelist[token.encode('utf-8')]
     return jsonify(message='Thank you for confirming your email address.', your_email=email)
