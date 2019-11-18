@@ -10,7 +10,6 @@ def generate_confirmation_token(user_id, user_email):
     payload = {
         'id': user_id,
         'email': user_email,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=30)
     }
     return jwt.encode(payload, os.getenv('JWT_SECRET_KEY'), algorithm='HS256')
 

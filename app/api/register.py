@@ -38,8 +38,12 @@ def register_user():
     token_whitelist[confirmation_token] = 1
     send_confirmation_email(added_user.email, confirmation_token)
 
-    return jsonify(message='Thanks for registering! Please check your email to confirm your email address.',
-                   added_user=added_user.serialize, confirmation_token=confirmation_token.decode('utf-8'))
+    return_params = {'message': 'Thanks for registering! Please check your email to confirm your email address.',
+                     'added_user': added_user.serialize
+                     }
+    if os.getenv('STAGE') == 'test':
+        return_params.update({'confirmation_token': confirmation_token.decode('utf-8')})
+    return jsonify(**return_params)
 
 
 @bp.route('/api/register/confirm/<token>', methods=['GET'])
@@ -47,7 +51,7 @@ def confirm_email(token):
     global token_whitelist
 
     if token.encode('utf-8') not in token_whitelist:
-        raise BadRequest('Account already confirmed. Please login.')
+        raise BadRequest('Invalid token.')
 
     try:
         email = jwt.decode(token, os.getenv('JWT_SECRET_KEY'), algorithms=['HS256'])['email']
@@ -57,7 +61,6 @@ def confirm_email(token):
 
     user = User.query.get(id)
     user.activated = True
-    db.session.add(user)
     db.session.commit()
 
     del token_whitelist[token.encode('utf-8')]
