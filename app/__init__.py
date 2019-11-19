@@ -5,6 +5,13 @@ import app.error_handlers as handler
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_mail import Mail
+from jinja2 import Environment, PackageLoader, select_autoescape
+
+
+jinja_env = Environment(
+    loader=PackageLoader('app', 'templates'),
+    autoescape=select_autoescape(['html', 'xml'])
+)
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
