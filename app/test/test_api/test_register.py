@@ -2,7 +2,7 @@ import json
 import pytest
 from app import bcrypt
 from app.test.test_api.test_user import data_sended, content_type, expected
-import mock
+from unittest import mock
 from app.api.register import generate_confirmation_token
 
 
@@ -11,9 +11,11 @@ from app.api.register import generate_confirmation_token
 def test_send_email_func(mock_send_confirmation_email, mock_generate_confirmation_token, app):
     data_sended = {"name": "sonnguyen", "email": "khraxo95@gmail.com", "password": "1xxxxxxxAA"}
 
-    response_register = app.test_client().post('/api/register', data=json.dumps(data_sended), content_type='application/json',)
-    id = response_register.get_json()['added_user']['id']
-    email = response_register.get_json()['added_user']['email']
+    response = app.test_client().post('/api/register',
+                                      data=json.dumps(data_sended),
+                                      content_type='application/json',)
+    data = response.get_json()['added_user']
+    id, email = data['id'], data['email']
     mock_generate_confirmation_token.assert_called_with(id, email)
     mock_send_confirmation_email.assert_called_with(email, mock_generate_confirmation_token())
 
@@ -55,16 +57,20 @@ def test_confirm_email(mock_generate_confirmation_token, app):
     data_sended = {"name": "sonnguyen", "email": "khraxo95@gmail.com", "password": "1xxxxxxxAA"}
     confirm_token = generate_confirmation_token("7", "khraxo95@gmail.com")
     mock_generate_confirmation_token.return_value = confirm_token
-    app.test_client().post('/api/register', data=json.dumps(data_sended), content_type='application/json',)
+    app.test_client().post('/api/register',
+                           data=json.dumps(data_sended),
+                           content_type='application/json',)
 
-    response_comfirm = app.test_client().get('/api/register/confirm/' + confirm_token.decode('utf-8'))
-    assert response_comfirm.status_code == 200
-    assert response_comfirm.get_json()['message'] == 'Thank you for confirming your email address.'
-    assert response_comfirm.get_json()['your_email'] == data_sended["email"]
+    reponse = app.test_client().get('/api/register/confirm/' + confirm_token.decode('utf-8'))
+    assert reponse.status_code == 200
+    response_body = reponse.get_json()
+    assert response_body['message'] == 'Thank you for confirming your email address.'
+    assert response_body['your_email'] == data_sended["email"]
 
     # When user re-confirms with the same token
-    response_comfirm = app.test_client().get('/api/register/confirm/' + confirm_token.decode('utf-8'))
-    assert response_comfirm.get_json()['description'] == "Invalid token."
+    reponse = app.test_client().get('/api/register/confirm/' + confirm_token.decode('utf-8'))
+    response_body = reponse.get_json()
+    assert response_body['description'] == "Invalid token."
 
 
 @pytest.mark.skip(reason="Need to wait 30s")
@@ -73,9 +79,12 @@ def test_confirm_email_fail(mock_generate_confirmation_token, app):
     data_sended = {"name": "sonnguyen", "email": "khraxo95@gmail.com", "password": "1xxxxxxxAA"}
     confirm_token = generate_confirmation_token("7", "khraxo95@gmail.com")
     mock_generate_confirmation_token.return_value = confirm_token
-    app.test_client().post('/api/register', data=json.dumps(data_sended), content_type='application/json',)
+    app.test_client().post('/api/register',
+                           data=json.dumps(data_sended),
+                           content_type='application/json',)
 
     import time
     time.sleep(31)
-    response_comfirm = app.test_client().get('/api/register/confirm/' + confirm_token.decode('utf-8'))
-    assert response_comfirm.get_json()['description'] == "The confirmation link is invalid or has expired."
+    reponse = app.test_client().get('/api/register/confirm/' + confirm_token.decode('utf-8'))
+    response_body = reponse.get_json()
+    assert response_body['description'] == "The confirmation link is invalid or has expired."

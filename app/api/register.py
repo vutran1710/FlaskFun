@@ -17,10 +17,9 @@ token_whitelist = {}
 @bp.route('/api/register', methods=['POST'], endpoint='register_user')
 @schema_required(schema)
 def register_user():
-    request_json_body = request.get_json()
-    name = request_json_body['name']
-    email = request_json_body['email']
-    password = bcrypt.generate_password_hash(request_json_body['password']).decode('utf8')
+    payload = request.get_json()
+    name, email = payload['name'], payload['email']
+    password = bcrypt.generate_password_hash(payload['password']).decode('utf8')
 
     added_user = User(name, email, password)
     profile_added = UserProfile()
@@ -50,8 +49,9 @@ def confirm_email(token):
         raise BadRequest('Invalid token.')
 
     try:
-        email = jwt.decode(token, os.getenv('JWT_SECRET_KEY'), algorithms=['HS256'])['email']
-        id = jwt.decode(token, os.getenv('JWT_SECRET_KEY'), algorithms=['HS256'])['id']
+        token_decode = jwt.decode(token, os.getenv('JWT_SECRET_KEY'), algorithms=['HS256'])
+        email = token_decode['email']
+        id = token_decode['id']
     except jwt.ExpiredSignatureError:
         raise BadRequest('The confirmation link is invalid or has expired.')
 

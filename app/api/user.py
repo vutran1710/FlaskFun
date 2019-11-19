@@ -29,10 +29,10 @@ def get_by_id(id):
 @bp.route('/api/user', methods=['POST'], endpoint='add_user')
 @schema_required(schema)
 def add_user():
-    request_json_body = request.get_json()
-    name = request_json_body['name']
-    email = request_json_body['email']
-    password = bcrypt.generate_password_hash(request_json_body['password']).decode('utf8')
+    payload = request.get_json()
+    name = payload['name']
+    email = payload['email']
+    password = bcrypt.generate_password_hash(payload['password']).decode('utf8')
 
     try:
         added_user = User(name, email, password)
@@ -53,10 +53,10 @@ def update_by_id(id):
     if updated_user is None:
         raise BadRequest("None exist user")
 
-    request_json_body = request.get_json()
-    name = request_json_body['name']
-    email = request_json_body['email']
-    password = bcrypt.generate_password_hash(request_json_body['password']).decode('utf8')
+    payload = request.get_json()
+    name = payload['name']
+    email = payload['email']
+    password = bcrypt.generate_password_hash(payload['password']).decode('utf8')
 
     try:
         updated_user.username = name
