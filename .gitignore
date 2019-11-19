@@ -67,3 +67,5 @@ typings/
 __pycache__/
 .cache/
 .coverage
+
+*.sh

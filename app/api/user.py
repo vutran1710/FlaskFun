@@ -1,34 +1,11 @@
 from flask import request, jsonify, Blueprint
 from werkzeug.exceptions import BadRequest
 from app.models import User
-from app import db
-from app import bcrypt
-from app.validator.extended import ValidatorExtended
+from app import db, bcrypt
+from app.decorator import schema_required
 from sqlalchemy import exc
+from app.user_schema import schema
 
-schema = {
-    'email': {
-        'type':        'string',
-        'required':    True,
-        'empty':       False,
-        'maxlength':   128
-    },
-    'name': {
-        'type':      'string',
-        'required':  True,
-        'empty':     False,
-        'maxlength': 128
-    },
-    'password': {
-        'type':      'string',
-        'required':  True,
-        'empty':     False,
-        'maxlength': 128,
-        'valid_password': True
-    }
-}
-
-validator = ValidatorExtended(schema)
 bp = Blueprint('user', __name__)
 
 
@@ -41,7 +18,7 @@ def get_all_user():
 
 @bp.route('/api/user/<int:id>', methods=['GET'])
 def get_by_id(id):
-    users = User.query.filter_by(id=id).first()
+    users = User.query.get(id)
 
     if users is None:
         raise BadRequest("None exist user")
@@ -49,66 +26,53 @@ def get_by_id(id):
     return jsonify(user=users.serialize)
 
 
-@bp.route('/api/user', methods=['POST'])
+@bp.route('/api/user', methods=['POST'], endpoint='add_user')
+@schema_required(schema)
 def add_user():
-    if not request.is_json:
-        raise BadRequest("Invalid: content type is not json!")
+    payload = request.get_json()
+    name = payload['name']
+    email = payload['email']
+    password = bcrypt.generate_password_hash(payload['password']).decode('utf8')
 
-    request_json_body = request.get_json()
-
-    if validator.validate(request_json_body) is False:
-        raise BadRequest(validator.errors)
-
-    name = request_json_body['name']
-    email = request_json_body['email']
-    password = bcrypt.generate_password_hash(request_json_body['password']).decode('utf8')
-    added_user = User(name, email, password)
     try:
+        added_user = User(name, email, password)
         db.session.add(added_user)
         db.session.commit()
     except exc.IntegrityError:
         db.session().rollback()
-        raise BadRequest("Invalid: the user already exists!")
+        raise BadRequest("Invalid: the username or email already exist!")
 
     return jsonify(added_user=added_user.serialize)
 
 
-@bp.route('/api/user/<int:id>', methods=['PATCH'])
+@bp.route('/api/user/<int:id>', methods=['PATCH'], endpoint='update_by_id')
+@schema_required(schema)
 def update_by_id(id):
-    if not request.is_json:
-        raise BadRequest("Invalid: content type is not json!")
-
-    request_json_body = request.get_json()
-
-    if validator.validate(request_json_body) is False:
-        raise BadRequest(validator.errors)
-
-    updated_user = User.query.filter_by(id=id).first()
+    updated_user = User.query.get(id)
 
     if updated_user is None:
         raise BadRequest("None exist user")
 
-    try:
-        updated_user.username = request_json_body["name"]
-        updated_user.password = bcrypt.generate_password_hash(request_json_body["password"]).decode('utf8')
-        db.session.commit()
-    except exc.IntegrityError:
-        db.session().rollback()
-        raise BadRequest("Invalid: the username already exists!")
+    payload = request.get_json()
+    name = payload['name']
+    email = payload['email']
+    password = bcrypt.generate_password_hash(payload['password']).decode('utf8')
 
     try:
-        updated_user.email = request_json_body["email"]
+        updated_user.username = name
+        updated_user.email = email
+        updated_user.password = password
         db.session.commit()
     except exc.IntegrityError:
         db.session().rollback()
-        raise BadRequest("Invalid: the email already exists!")
+        raise BadRequest("Invalid: the username or email already exist!")
 
     return jsonify(updated_user=updated_user.serialize)
 
 
 @bp.route('/api/user/<int:id>', methods=['DELETE'])
 def delete_by_id(id):
-    deleted_user = User.query.filter_by(id=id).first()
+    deleted_user = User.query.get(id)
 
     if deleted_user is None:
         raise BadRequest("None exist user")
