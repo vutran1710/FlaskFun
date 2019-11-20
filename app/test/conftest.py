@@ -11,7 +11,7 @@ def app():
 
     user0 = User("Son", "n.vanson@gmail.com", bcrypt.generate_password_hash("1234567aA").decode('utf8'))
     user1 = User("Hoan", "n.vanhoan@gmail.com",  bcrypt.generate_password_hash("1234567bB").decode('utf8'))
-    user2 = User("Lam", "n.tunglam@gmail.com",  bcrypt.generate_password_hash("1234567cC").decode('utf8'))
+    user2 = User("Lam", "tunglammeta@gmail.com",  bcrypt.generate_password_hash("1234567cC").decode('utf8'))
     user3 = User("Hung", "n.vanhung@gmail.com",  bcrypt.generate_password_hash("1234567dD").decode('utf8'))
     user4 = User("Nam", "n.huynam@gmail.com",  bcrypt.generate_password_hash("1234567eE").decode('utf8'))
     user5 = User("Viet", "n.vanviet@gmail.com",  bcrypt.generate_password_hash("1234567fF").decode('utf8'))
