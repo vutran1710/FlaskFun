@@ -32,7 +32,7 @@ reset_schema = {
 }
 
 password_schema = {
-    'password': {
+    'new_password': {
         'type':      'string',
         'required':  True,
         'empty':     False,

@@ -3,7 +3,7 @@ import pytest
 from app import bcrypt
 from app.test.test_api.test_user import data_sended, content_type, expected
 from unittest import mock
-from app.api.register import generate_confirmation_token, generate_reset_token, User
+from app.api.register import generate_confirmation_token, generate_reset_token
 
 
 @mock.patch('app.api.register.generate_confirmation_token')
@@ -55,7 +55,7 @@ def test_register_fail(app, data_sended, content_type, expected):
 @mock.patch('app.api.register.generate_confirmation_token')
 def test_confirm_email(mock_generate_confirmation_token, app):
     data_sended = {"name": "sonnguyen", "email": "khraxo95@gmail.com", "password": "1xxxxxxxAA"}
-    confirm_token = generate_confirmation_token("7", "khraxo95@gmail.com")
+    confirm_token = generate_confirmation_token(7, "khraxo95@gmail.com")
     mock_generate_confirmation_token.return_value = confirm_token
     app.test_client().post('/api/register',
                            data=json.dumps(data_sended),
@@ -92,8 +92,7 @@ def test_confirm_email_fail(mock_generate_confirmation_token, app):
 
 @mock.patch('app.api.register.generate_reset_token')
 @mock.patch('app.api.register.send_password_reset_email')
-@mock.patch('app.api.register.User')
-def test_send_reset_func(mock_send_password_reset_email, mock_generate_reset_token, mock_User, app):
+def test_send_reset_func(mock_send_password_reset_email, mock_generate_reset_token, app):
     data_email = {"email": "tunglammeta@gmail.com"}
 
     app.test_client().post('/api/reset',
@@ -101,7 +100,7 @@ def test_send_reset_func(mock_send_password_reset_email, mock_generate_reset_tok
                            content_type='application/json',)
     # mock_User.query.filter_by.first.return_value.activated = True
 
-    id, email = "3", data_email['email']
+    id, email = 3, data_email['email']
     mock_generate_reset_token.assert_called_with(id, email)
     mock_send_password_reset_email.assert_called_with(email, mock_generate_reset_token())
 
@@ -109,14 +108,14 @@ def test_send_reset_func(mock_send_password_reset_email, mock_generate_reset_tok
 @mock.patch('app.api.register.generate_reset_token')
 def test_reset_with_token(mock_generate_reset_token, app):
     data_email = {"email": "tunglammeta@gmail.com"}
-    reset_token = generate_reset_token("3", "tunglammeta@gmail.com")
+    reset_token = generate_reset_token(3, "tunglammeta@gmail.com")
     mock_generate_reset_token.return_value = reset_token
     app.test_client().post('/api/reset',
                            data=json.dumps(data_email),
                            content_type='application/json',)
 
     data_password = {"new_password": "1234567cCc"}
-    reponse = app.test_client().post('/api/reset' + reset_token.decode('utf-8'),
+    reponse = app.test_client().post('/api/reset/' + reset_token.decode('utf-8'),
                                      data=json.dumps(data_password),
                                      content_type='application/json',)
 
@@ -126,7 +125,7 @@ def test_reset_with_token(mock_generate_reset_token, app):
 
     # When user re-confirms with the same token
     data_password = {"new_password": "1234567cCc"}
-    reponse = app.test_client().post('/api/reset' + reset_token.decode('utf-8'),
+    reponse = app.test_client().post('/api/reset/' + reset_token.decode('utf-8'),
                                      data=json.dumps(data_password),
                                      content_type='application/json',)
     response_body = reponse.get_json()

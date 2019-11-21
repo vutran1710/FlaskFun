@@ -5,7 +5,7 @@ from app import bcrypt
 test_users = [
         {"id": 1, "username": "Son", "email": "n.vanson@gmail.com", "password": "1234567aA"},
         {"id": 2, "username": "Hoan", "email": "n.vanhoan@gmail.com", "password": "1234567bB"},
-        {"id": 3, "username": "Lam", "email": "n.tunglam@gmail.com", "password": "1234567cC"},
+        {"id": 3, "username": "Lam", "email": "tunglammeta@gmail.com", "password": "1234567cC"},
         {"id": 4, "username": "Hung", "email": "n.vanhung@gmail.com", "password": "1234567dD"},
         {"id": 5, "username": "Nam", "email": "n.huynam@gmail.com", "password": "1234567eE"},
         {"id": 6, "username": "Viet", "email": "n.vanviet@gmail.com", "password": "1234567fF"}

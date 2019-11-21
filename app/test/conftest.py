@@ -15,6 +15,7 @@ def app():
     user3 = User("Hung", "n.vanhung@gmail.com",  bcrypt.generate_password_hash("1234567dD").decode('utf8'))
     user4 = User("Nam", "n.huynam@gmail.com",  bcrypt.generate_password_hash("1234567eE").decode('utf8'))
     user5 = User("Viet", "n.vanviet@gmail.com",  bcrypt.generate_password_hash("1234567fF").decode('utf8'))
+    user2.activated = True
     user_list = [user0, user1, user2, user3, user4, user5]
 
     for i in range(6):

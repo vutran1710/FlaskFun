@@ -16,8 +16,8 @@ def generate_reset_token(user_id, user_email):
     return jwt.encode(payload, os.getenv('JWT_SECRET_KEY'), algorithm='HS256')
 
 
-def send_password_reset_email(user_email, confirmation_token):
-    password_reset_url = url_for('register.confirm_email', token=confirmation_token, _external=True)
+def send_password_reset_email(user_email, reset_token):
+    password_reset_url = url_for('register.reset_with_token', token=reset_token, _external=True)
     template = jinja_env.get_template('email_password_reset.html')
     html = template.render(password_reset_url=password_reset_url)
     send_email('Password Reset Requested', [user_email], html)
