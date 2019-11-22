@@ -1,6 +1,12 @@
 import os
 
+# sever setting
 SERVER_NAME = '127.0.0.1:5000'
+
+# jwt setting
+JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
+JWT_BLACKLIST_ENABLED = True
+JWT_BLACKLIST_TOKEN_CHECKS = 'access'
 
 # mail setting
 MAIL_SERVER = 'smtp.googlemail.com'

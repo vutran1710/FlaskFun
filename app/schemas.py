@@ -21,6 +21,16 @@ user_schema = {
     }
 }
 
+password_schema = {
+    'new_password': {
+        'type':      'string',
+        'required':  True,
+        'empty':     False,
+        'maxlength': 128,
+        'valid_password': True
+    }
+}
+
 reset_schema = {
     'email': {
         'type':        'string',
@@ -31,8 +41,14 @@ reset_schema = {
     },
 }
 
-password_schema = {
-    'new_password': {
+login_schema = {
+    'name': {
+        'type':      'string',
+        'required':  True,
+        'empty':     False,
+        'maxlength': 128
+    },
+    'password': {
         'type':      'string',
         'required':  True,
         'empty':     False,
