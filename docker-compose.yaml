@@ -15,3 +15,13 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - 5412:5432
+  redis:
+    image: redis:5-alpine
+    container_name: magellan-cache
+    ports:
+      - 6379:6379
+  redistest:
+    image: redis:5-alpine
+    container_name: magellan-cache-test
+    ports:
+      - 6380:6379
