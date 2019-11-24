@@ -18,3 +18,4 @@ def schema_required(schema):
             return response
         return wrapper
     return decorator
+

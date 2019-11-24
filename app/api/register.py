@@ -4,7 +4,7 @@ from sqlalchemy import exc
 import jwt
 from werkzeug.exceptions import BadRequest
 from app.models import User, UserProfile
-from app import db, bcrypt
+from app import db, bcrypt, cache
 from app.decorator import schema_required
 from app.helper.send_confirmation_email import generate_confirmation_token, send_confirmation_email
 from app.helper.send_password_reset_email import generate_reset_token, send_password_reset_email
@@ -13,6 +13,16 @@ from app.schemas import user_schema, reset_schema, password_schema
 
 bp = Blueprint('register', __name__)
 token_whitelist = {}
+
+
+@cache.memoize()
+def load_user(user_id):
+    return User.query.get(user_id)
+
+
+@cache.memoize()
+def load_user_by_email(user_email):
+    return User.query.filter_by(email=user_email).first()
 
 
 @bp.route('/api/register', methods=['POST'], endpoint='register_user')
@@ -55,7 +65,7 @@ def confirm_email(token):
     except jwt.ExpiredSignatureError:
         raise BadRequest('The confirmation link is invalid or has expired.')
 
-    user = User.query.get(id)
+    user = load_user(id)
     user.activated = True
     db.session.commit()
 
@@ -70,7 +80,7 @@ def reset():
     email = payload['email']
 
     try:
-        user = User.query.filter_by(email=email).first()
+        user = load_user_by_email(email)
     except exc.IntegrityError:
         raise BadRequest('Invalid email address!')
 
@@ -97,7 +107,7 @@ def reset_with_token(token):
     except jwt.ExpiredSignatureError:
         raise BadRequest('The reset link is invalid or has expired.')
 
-    user = User.query.get(id)
+    user = load_user(id)
     payload = request.get_json()
     new_password = bcrypt.generate_password_hash(payload['new_password']).decode('utf8')
     user.password = new_password

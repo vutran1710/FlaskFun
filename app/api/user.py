@@ -1,12 +1,17 @@
 from flask import request, jsonify, Blueprint
 from werkzeug.exceptions import BadRequest
 from app.models import User
-from app import db, bcrypt
+from app import db, bcrypt, cache
 from app.decorator import schema_required
 from sqlalchemy import exc
 from app.schemas import user_schema
 
 bp = Blueprint('user', __name__)
+
+
+@cache.memoize()
+def load_user(user_id):
+    return User.query.get(user_id)
 
 
 @bp.route('/api/user', methods=['GET'])
@@ -18,7 +23,7 @@ def get_all_user():
 
 @bp.route('/api/user/<int:id>', methods=['GET'])
 def get_by_id(id):
-    users = User.query.get(id)
+    users = load_user(id)
 
     if users is None:
         raise BadRequest("None exist user")
@@ -48,7 +53,8 @@ def add_user():
 @bp.route('/api/user/<int:id>', methods=['PATCH'], endpoint='update_by_id')
 @schema_required(user_schema)
 def update_by_id(id):
-    updated_user = User.query.get(id)
+    updated_user = load_user.uncached(id)
+    cache.delete_memoized(load_user, id)
 
     if updated_user is None:
         raise BadRequest("None exist user")
@@ -72,11 +78,12 @@ def update_by_id(id):
 
 @bp.route('/api/user/<int:id>', methods=['DELETE'])
 def delete_by_id(id):
-    deleted_user = User.query.get(id)
+    deleted_user = load_user(id)
 
     if deleted_user is None:
         raise BadRequest("None exist user")
 
+    cache.delete_memoized(load_user, id)
     db.session.delete(deleted_user)
     db.session.commit()
 
@@ -86,6 +93,7 @@ def delete_by_id(id):
 @bp.route('/api/user', methods=['DELETE'])
 def delete_all_user():
     deleted_users = User.query.all()
+    cache.delete_memoized(load_user, id)
     User.query.delete()
     db.session.commit()
 

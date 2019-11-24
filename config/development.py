@@ -6,3 +6,4 @@ from . import default # noqa
 
 DEBUG = True
 SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@localhost:5422/postgres"
+CACHE_REDIS_URL = "redis://localhost:6379"

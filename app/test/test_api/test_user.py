@@ -1,6 +1,9 @@
 import json
 import pytest
 from app import bcrypt
+import redis
+
+redis_test = redis.Redis(host='localhost', port=6380, db=0)
 
 test_users = [
         {"id": 1, "username": "Son", "email": "n.vanson@gmail.com", "password": "1234567aA"},
@@ -17,6 +20,7 @@ def test_get(app):
     assert response.status_code == 200
     response_body = response.get_json()
     for i in range(6):
+        redis_test.get('')
         assert response_body['users'][i]["username"] == test_users[i]["username"]
         assert response_body['users'][i]["email"] == test_users[i]["email"]
         assert bcrypt.check_password_hash(response_body['users'][i]["password"], test_users[i]["password"])
