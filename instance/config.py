@@ -1,13 +1,16 @@
 import os
+import datetime
 
 # sever setting
 SERVER_NAME = '127.0.0.1:5000'
 
 # jwt setting
 JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
+
+# flask-jwt-extended setting
 JWT_BLACKLIST_ENABLED = True
 JWT_BLACKLIST_TOKEN_CHECKS = 'access'
-
+JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(seconds=300)
 # mail setting
 MAIL_SERVER = 'smtp.googlemail.com'
 MAIL_PORT = 465
