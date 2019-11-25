@@ -1,9 +1,7 @@
 import json
 import pytest
-from app import bcrypt
-import redis
+from app import bcrypt, cache
 
-redis_test = redis.Redis(host='localhost', port=6380, db=0)
 
 test_users = [
         {"id": 1, "username": "Son", "email": "n.vanson@gmail.com", "password": "1234567aA"},
@@ -20,7 +18,6 @@ def test_get(app):
     assert response.status_code == 200
     response_body = response.get_json()
     for i in range(6):
-        redis_test.get('')
         assert response_body['users'][i]["username"] == test_users[i]["username"]
         assert response_body['users'][i]["email"] == test_users[i]["email"]
         assert bcrypt.check_password_hash(response_body['users'][i]["password"], test_users[i]["password"])
@@ -31,6 +28,9 @@ def test_get_id(app):
         response = app.test_client().get('/api/user/{}'.format(i+1))
         assert response.status_code == 200
         response_body = response.get_json()
+        cache_key = response_body['user']['id']
+        data_in_cache = cache.get(str(cache_key))
+        assert str(data_in_cache) == '<User %r>' % test_users[i]["username"]
         assert response_body['user']["username"] == test_users[i]["username"]
         assert response_body['user']["email"] == test_users[i]["email"]
         assert bcrypt.check_password_hash(response_body['user']["password"], test_users[i]["password"])
@@ -162,7 +162,9 @@ def test_patch(app):
     assert response_body['updated_user']['username'] == data_sended['name']
     assert response_body['updated_user']['email'] == data_sended['email']
     assert bcrypt.check_password_hash(response_body['updated_user']["password"], data_sended["password"])
-
+    cache_key = response_body['updated_user']['id']
+    data_in_cache = cache.get(str(cache_key))
+    assert str(data_in_cache) == '<User %r>' % data_sended['name']
 
 @pytest.mark.parametrize("data_sended, content_type, expected",
                          [
@@ -200,6 +202,9 @@ def test_delete(app):
 
     assert response.status_code == 200
     response_body = response.get_json()
+    cache_key = response_body['deleted_user']['id']
+    data_in_cache = cache.get(str(cache_key))
+    assert data_in_cache is None
     assert response_body['deleted_user']['username'] == "Hoan"
     assert response_body['deleted_user']['email'] == "n.vanhoan@gmail.com"
 

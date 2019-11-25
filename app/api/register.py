@@ -15,16 +15,6 @@ bp = Blueprint('register', __name__)
 token_whitelist = {}
 
 
-@cache.memoize()
-def load_user(user_id):
-    return User.query.get(user_id)
-
-
-@cache.memoize()
-def load_user_by_email(user_email):
-    return User.query.filter_by(email=user_email).first()
-
-
 @bp.route('/api/register', methods=['POST'], endpoint='register_user')
 @schema_required(user_schema)
 def register_user():
@@ -65,7 +55,7 @@ def confirm_email(token):
     except jwt.ExpiredSignatureError:
         raise BadRequest('The confirmation link is invalid or has expired.')
 
-    user = load_user(id)
+    user = User.query.get(id)
     user.activated = True
     db.session.commit()
 
@@ -80,7 +70,7 @@ def reset():
     email = payload['email']
 
     try:
-        user = load_user_by_email(email)
+        user = User.query.filter_by(email=email).first()
     except exc.IntegrityError:
         raise BadRequest('Invalid email address!')
 
@@ -107,7 +97,7 @@ def reset_with_token(token):
     except jwt.ExpiredSignatureError:
         raise BadRequest('The reset link is invalid or has expired.')
 
-    user = load_user(id)
+    user = User.query.get(id)
     payload = request.get_json()
     new_password = bcrypt.generate_password_hash(payload['new_password']).decode('utf8')
     user.password = new_password

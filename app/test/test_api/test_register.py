@@ -98,7 +98,6 @@ def test_send_reset_func(mock_send_password_reset_email, mock_generate_reset_tok
     app.test_client().post('/api/reset',
                            data=json.dumps(data_email),
                            content_type='application/json',)
-    # mock_User.query.filter_by.first.return_value.activated = True
 
     id, email = 3, data_email['email']
     mock_generate_reset_token.assert_called_with(id, email)

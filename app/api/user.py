@@ -9,9 +9,12 @@ from app.schemas import user_schema
 bp = Blueprint('user', __name__)
 
 
-@cache.memoize()
 def load_user(user_id):
-    return User.query.get(user_id)
+    user = User.query.get(user_id)
+    if user is None:
+        raise BadRequest("None exist user")
+    cache.set(str(user.id), user)
+    return user
 
 
 @bp.route('/api/user', methods=['GET'])
@@ -23,12 +26,9 @@ def get_all_user():
 
 @bp.route('/api/user/<int:id>', methods=['GET'])
 def get_by_id(id):
-    users = load_user(id)
+    user = load_user(id)
 
-    if users is None:
-        raise BadRequest("None exist user")
-
-    return jsonify(user=users.serialize)
+    return jsonify(user=user.serialize)
 
 
 @bp.route('/api/user', methods=['POST'], endpoint='add_user')
@@ -53,8 +53,7 @@ def add_user():
 @bp.route('/api/user/<int:id>', methods=['PATCH'], endpoint='update_by_id')
 @schema_required(user_schema)
 def update_by_id(id):
-    updated_user = load_user.uncached(id)
-    cache.delete_memoized(load_user, id)
+    updated_user = User.query.get(id)
 
     if updated_user is None:
         raise BadRequest("None exist user")
@@ -68,6 +67,7 @@ def update_by_id(id):
         updated_user.username = name
         updated_user.email = email
         updated_user.password = password
+        cache.set(str(id), updated_user)
         db.session.commit()
     except exc.IntegrityError:
         db.session().rollback()
@@ -83,7 +83,7 @@ def delete_by_id(id):
     if deleted_user is None:
         raise BadRequest("None exist user")
 
-    cache.delete_memoized(load_user, id)
+    cache.delete(str(id))
     db.session.delete(deleted_user)
     db.session.commit()
 
@@ -93,7 +93,6 @@ def delete_by_id(id):
 @bp.route('/api/user', methods=['DELETE'])
 def delete_all_user():
     deleted_users = User.query.all()
-    cache.delete_memoized(load_user, id)
     User.query.delete()
     db.session.commit()
 
