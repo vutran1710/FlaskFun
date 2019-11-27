@@ -11,6 +11,7 @@ JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
 JWT_BLACKLIST_ENABLED = True
 JWT_BLACKLIST_TOKEN_CHECKS = 'access'
 JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(seconds=300)
+
 # mail setting
 MAIL_SERVER = 'smtp.googlemail.com'
 MAIL_PORT = 465

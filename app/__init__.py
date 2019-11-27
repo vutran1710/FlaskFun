@@ -9,6 +9,7 @@ from jinja2 import Environment, PackageLoader, select_autoescape
 from flask_jwt_extended import JWTManager
 from flask_caching import Cache
 
+
 jinja_env = Environment(
     loader=PackageLoader('app', 'templates'),
     autoescape=select_autoescape(['html', 'xml'])
@@ -38,6 +39,7 @@ def create_app():
     mail.init_app(app)
     jwt_manager.init_app(app)
     cache.init_app(app)
+
 
     from app.models import User # noqa
     db.create_all()
