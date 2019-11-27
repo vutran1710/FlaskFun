@@ -1,5 +1,4 @@
 import json
-from app import bcrypt
 
 
 def test_login(app):
@@ -11,7 +10,7 @@ def test_login(app):
     response_body = response.get_json()
     assert response_body['message'] == "Login success."
     assert response_body['user']['username'] == data_sended['name']
-    assert bcrypt.check_password_hash(response_body['user']['password'], data_sended['password'])
+    assert response_body['token']
 
 
 def test_logout(app):
@@ -22,6 +21,7 @@ def test_logout(app):
     headers = {
         'Authorization': 'Bearer {}'.format(resp_login.get_json()['token'])
     }
-    response = app.test_client().delete('/api/logout', headers=headers)
+    response = app.test_client().put('/api/logout', headers=headers)
+    assert response.status_code == 200
     response_body = response.get_json()
     assert response_body['message'] == "Successfully logged out."

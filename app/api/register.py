@@ -4,7 +4,7 @@ from sqlalchemy import exc
 import jwt
 from werkzeug.exceptions import BadRequest
 from app.models import User, UserProfile
-from app import db, bcrypt, cache
+from app import db, bcrypt
 from app.decorator import schema_required
 from app.helper.send_confirmation_email import generate_confirmation_token, send_confirmation_email
 from app.helper.send_password_reset_email import generate_reset_token, send_password_reset_email
