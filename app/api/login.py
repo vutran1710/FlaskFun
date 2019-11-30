@@ -39,7 +39,7 @@ def login_user():
         raise BadRequest('Invalid username or password.')
 
 
-@bp.route('/api/logout', methods=['DELETE'])
+@bp.route('/api/logout', methods=['PUT'])
 @jwt_required
 def logout():
     jti = get_raw_jwt()['jti']

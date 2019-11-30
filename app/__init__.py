@@ -7,6 +7,7 @@ from flask_bcrypt import Bcrypt
 from flask_mail import Mail
 from jinja2 import Environment, PackageLoader, select_autoescape
 from flask_jwt_extended import JWTManager
+from flask_caching import Cache
 
 
 jinja_env = Environment(
@@ -18,6 +19,7 @@ db = SQLAlchemy()
 bcrypt = Bcrypt()
 mail = Mail()
 jwt_manager = JWTManager()
+cache = Cache()
 
 
 def create_app():
@@ -36,6 +38,8 @@ def create_app():
     bcrypt.init_app(app)
     mail.init_app(app)
     jwt_manager.init_app(app)
+    cache.init_app(app)
+
 
     from app.models import User # noqa
     db.create_all()

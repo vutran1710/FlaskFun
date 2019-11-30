@@ -21,6 +21,8 @@ flask-bcrypt = "*"
 flask-mail = "*"
 pyjwt = "*"
 Flask-JWT-Extended = "*"
+Flask-Caching = "*"
+redis = "*"
 
 [requires]
 python_version = "3.7"

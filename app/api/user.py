@@ -1,12 +1,20 @@
 from flask import request, jsonify, Blueprint
 from werkzeug.exceptions import BadRequest
 from app.models import User
-from app import db, bcrypt
+from app import db, bcrypt, cache
 from app.decorator import schema_required
 from sqlalchemy import exc
 from app.schemas import user_schema
 
 bp = Blueprint('user', __name__)
+
+
+def load_user(user_id):
+    user = User.query.get(user_id)
+    if user is None:
+        raise BadRequest("None exist user")
+    cache.set(str(user.id), user)
+    return user
 
 
 @bp.route('/api/user', methods=['GET'])
@@ -18,12 +26,9 @@ def get_all_user():
 
 @bp.route('/api/user/<int:id>', methods=['GET'])
 def get_by_id(id):
-    users = User.query.get(id)
+    user = load_user(id)
 
-    if users is None:
-        raise BadRequest("None exist user")
-
-    return jsonify(user=users.serialize)
+    return jsonify(user=user.serialize)
 
 
 @bp.route('/api/user', methods=['POST'], endpoint='add_user')
@@ -62,6 +67,7 @@ def update_by_id(id):
         updated_user.username = name
         updated_user.email = email
         updated_user.password = password
+        cache.set(str(id), updated_user)
         db.session.commit()
     except exc.IntegrityError:
         db.session().rollback()
@@ -72,11 +78,12 @@ def update_by_id(id):
 
 @bp.route('/api/user/<int:id>', methods=['DELETE'])
 def delete_by_id(id):
-    deleted_user = User.query.get(id)
+    deleted_user = load_user(id)
 
     if deleted_user is None:
         raise BadRequest("None exist user")
 
+    cache.delete(str(id))
     db.session.delete(deleted_user)
     db.session.commit()
 

@@ -1,6 +1,5 @@
 import json
 import pytest
-from app import bcrypt
 from app.test.test_api.test_user import data_sended, content_type, expected
 from unittest import mock
 from app.api.register import generate_confirmation_token, generate_reset_token
@@ -30,7 +29,6 @@ def test_register(app):
     assert response_body['message'] == "Thanks for registering! Please check your email to confirm your email address."
     assert response_body['added_user']['username'] == data_sended['name']
     assert response_body['added_user']['email'] == data_sended['email']
-    assert bcrypt.check_password_hash(response_body['added_user']["password"], data_sended["password"])
 
 
 @pytest.mark.parametrize("data_sended, content_type, expected",
@@ -61,15 +59,16 @@ def test_confirm_email(mock_generate_confirmation_token, app):
                            data=json.dumps(data_sended),
                            content_type='application/json',)
 
-    reponse = app.test_client().get('/api/register/confirm/' + confirm_token.decode('utf-8'))
-    assert reponse.status_code == 200
-    response_body = reponse.get_json()
+    response = app.test_client().get('/api/register/confirm/' + confirm_token.decode('utf-8'))
+    assert response.status_code == 200
+    response_body = response.get_json()
     assert response_body['message'] == 'Thank you for confirming your email address.'
     assert response_body['your_email'] == data_sended["email"]
 
     # When user re-confirms with the same token
-    reponse = app.test_client().get('/api/register/confirm/' + confirm_token.decode('utf-8'))
-    response_body = reponse.get_json()
+    response = app.test_client().get('/api/register/confirm/' + confirm_token.decode('utf-8'))
+    assert response.status_code == 400
+    response_body = response.get_json()
     assert response_body['description'] == "Invalid token."
 
 
@@ -85,8 +84,9 @@ def test_confirm_email_fail(mock_generate_confirmation_token, app):
 
     import time
     time.sleep(31)
-    reponse = app.test_client().get('/api/register/confirm/' + confirm_token.decode('utf-8'))
-    response_body = reponse.get_json()
+    response = app.test_client().get('/api/register/confirm/' + confirm_token.decode('utf-8'))
+    assert response.status_code == 400
+    response_body = response.get_json()
     assert response_body['description'] == "The confirmation link is invalid or has expired."
 
 
@@ -98,7 +98,6 @@ def test_send_reset_func(mock_send_password_reset_email, mock_generate_reset_tok
     app.test_client().post('/api/reset',
                            data=json.dumps(data_email),
                            content_type='application/json',)
-    # mock_User.query.filter_by.first.return_value.activated = True
 
     id, email = 3, data_email['email']
     mock_generate_reset_token.assert_called_with(id, email)
@@ -115,18 +114,19 @@ def test_reset_with_token(mock_generate_reset_token, app):
                            content_type='application/json',)
 
     data_password = {"new_password": "1234567cCc"}
-    reponse = app.test_client().post('/api/reset/' + reset_token.decode('utf-8'),
-                                     data=json.dumps(data_password),
-                                     content_type='application/json',)
+    response = app.test_client().post('/api/reset/' + reset_token.decode('utf-8'),
+                                      data=json.dumps(data_password),
+                                      content_type='application/json',)
 
-    assert reponse.status_code == 200
-    response_body = reponse.get_json()
+    assert response.status_code == 200
+    response_body = response.get_json()
     assert response_body['message'] == 'Your password has been updated!'
 
     # When user re-confirms with the same token
     data_password = {"new_password": "1234567cCc"}
-    reponse = app.test_client().post('/api/reset/' + reset_token.decode('utf-8'),
-                                     data=json.dumps(data_password),
-                                     content_type='application/json',)
-    response_body = reponse.get_json()
+    response = app.test_client().post('/api/reset/' + reset_token.decode('utf-8'),
+                                      data=json.dumps(data_password),
+                                      content_type='application/json',)
+    assert response.status_code == 400
+    response_body = response.get_json()
     assert response_body['description'] == "Invalid token."

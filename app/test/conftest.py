@@ -1,6 +1,6 @@
 import os
 import pytest
-from app import create_app, db, bcrypt
+from app import create_app, db, bcrypt, cache
 from app.models import User
 
 
@@ -23,5 +23,7 @@ def app():
         db.session.commit()
 
     yield app
+
+    cache.clear()
     db.session.remove()
     db.drop_all()
