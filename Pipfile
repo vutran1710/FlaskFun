@@ -23,6 +23,7 @@ pyjwt = "*"
 Flask-JWT-Extended = "*"
 Flask-Caching = "*"
 redis = "*"
+flask-threads = "*"
 
 [requires]
 python_version = "3.7"

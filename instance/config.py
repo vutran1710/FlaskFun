@@ -2,7 +2,7 @@ import os
 import datetime
 
 # sever setting
-SERVER_NAME = '127.0.0.1:5000'
+SERVER_NAME = '192.168.0.103:5000'
 
 # jwt setting
 JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
@@ -28,7 +28,14 @@ MAIL_DEFAULT_SENDER = os.getenv('MAIL_USERNAME')
 # cache setting
 CACHE_TYPE = 'redis'
 CACHE_DEFAULT_TIMEOUT = 300
-CACHE_REDIS_HOST = 'localhost'
+CACHE_REDIS_HOST = '192.168.0.103'
 CACHE_REDIS_PORT = '6379'
 
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+SQLALCHEMY_ENGINE_OPTIONS = {
+    'pool_recycle': 90,
+    'pool_timeout': 900,
+    'pool_size': 50,
+    'max_overflow': 25,
+}
