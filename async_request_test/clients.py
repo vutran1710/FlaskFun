@@ -4,31 +4,38 @@ import requests
 import aiohttp
 import matplotlib.pyplot as plt
 
-async def fetch(session, url):
+begin = time.time()
+start_times = []
+end_times = []
+
+async def fetch(session, url, task_name):
+    global begin
+    print( 'Start time of {} is: {}'.format(task_name, time.strftime("%X")))
+    start_times.append(time.time() - begin)
     async with session.get(url) as response:
         return await response.json()
 
 async def main(num):
+    global begin
     my_url = 'http://192.168.0.103:5000/api/user/1'
     my_session = aiohttp.ClientSession()
-    submits = []
-    time_start = []
-    consume_time = []
-    list_tasks = [fetch(my_session, my_url) for i in range(num)]
-    for i in range(num):
-        task = asyncio.create_task(list_tasks[i])
-        time_start.append(time.time())
-        submits.append(task)
+    task_lists = [fetch(my_session, my_url, 'task {}'.format(i+1)) for i in range(num)]
 
-    for i in range(num):
-      await submits[i]
-      print('done task ' + str(i+1) + ' at')
-      print(time.time() - time_start[i])
-      consume_time.append(time.time() - time_start[i])
+    j = 0
+    for task in await asyncio.gather(*task_lists):
+        print( 'End time of task {} is '.format(j+1) + time.strftime("%X"))
+        end_times.append(time.time() - begin)
+        j+=1
+    
+    responses = [i for i in range (num)]
 
-    response = [i for i in range(num)]
-    plt.plot(consume_time, response)
+    fig, ax = plt.subplots()
+    ax.scatter(responses, start_times, marker="o", s=0.4)
+    ax.set_xlabel("response")
+    ax.set_ylabel("time")
+    ax.scatter(responses, end_times, marker="o", s=0.4)
     plt.show()
 
-asyncio.run(main(440))
+
+asyncio.run(main(1000))
 
