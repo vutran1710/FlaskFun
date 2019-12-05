@@ -71,3 +71,13 @@ pipenv run test
 3. Send email to newly registered user for Activation Request
 4. Write Public API for User Login, authenticated using JWT
 ```
+
+# Experiment
+## Purpose
+## Theoretical Basis
+## Preparing
+We could use an another computer or a virtual machine to conduct this experiment 
+## Process
+## Result
+## Conclusion
+## Future Improvments

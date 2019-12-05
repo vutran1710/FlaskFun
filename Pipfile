@@ -23,7 +23,8 @@ pyjwt = "*"
 Flask-JWT-Extended = "*"
 Flask-Caching = "*"
 redis = "*"
-waitress = "*"
+gunicorn = "*"
+gevent = "*"
 
 [requires]
 python_version = "3.7"
