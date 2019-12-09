@@ -1,6 +1,5 @@
 import asyncio
 import time
-import requests
 import aiohttp
 import matplotlib.pyplot as plt
 
