@@ -1,1 +1,0 @@
-web: gunicorn --worker-class=gevent --worker-connections=1000 --workers=9 --bind=192.168.0.103:5000  app:app
