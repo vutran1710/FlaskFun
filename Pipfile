@@ -23,10 +23,13 @@ pyjwt = "*"
 Flask-JWT-Extended = "*"
 Flask-Caching = "*"
 redis = "*"
+gunicorn = "*"
+gevent = "*"
 
 [requires]
 python_version = "3.7"
 
 [scripts]
 app = "python ./run.py"
+production = "pipenv run waitress-serve --listen=192.168.0.103:5000 --call 'app:create_app'"
 test = "python -m pytest -vv -rsx --cov=app"

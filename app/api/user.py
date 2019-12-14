@@ -5,6 +5,8 @@ from app import db, bcrypt, cache
 from app.decorator import schema_required
 from sqlalchemy import exc
 from app.schemas import user_schema
+import time
+
 
 bp = Blueprint('user', __name__)
 
@@ -27,7 +29,7 @@ def get_all_user():
 @bp.route('/api/user/<int:id>', methods=['GET'])
 def get_by_id(id):
     user = load_user(id)
-
+    time.sleep(5)
     return jsonify(user=user.serialize)
 
 
